@@ -51,12 +51,19 @@ void Game::run()
 {
   while (true) 
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    FarmUnit* unit = this->getUnit(5,5);
-    CropField* cropField = dynamic_cast<CropField*>(unit);
-    if (cropField)
+    std::this_thread::sleep_for(std::chrono::milliseconds(4000));
+
+    for(int x = 0 ; x < width ; x++)
     {
-      cropField->rain();
+      for(int y = 0 ; y < height ; y++)
+      {
+        FarmUnit* unit = this->getUnit(x,y);
+        CropField* cropField = dynamic_cast<CropField*>(unit);
+        if (cropField)
+        {
+          cropField->rain();
+        }
+      }
     }
   }
 }
