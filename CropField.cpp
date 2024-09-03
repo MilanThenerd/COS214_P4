@@ -1,5 +1,7 @@
 #include "CropField.h"
 
+#include <iostream>
+
 CropField::CropField(std::string crop , int capacity)
 {
   this->cropType = crop;
@@ -70,35 +72,30 @@ void CropField::addCrops(int amount)
 int CropField::removeCrops(int amount)
 {
   int total = 0;
-  if(currentStored < amount)
+  if (extraBarn) 
   {
-    if(extraBarn)
+    int amountInBarn = extraBarn->getTotalCapacity() - extraBarn->getLeftoverCapacity();
+    if (amountInBarn >= amount) 
     {
-      int amountInBarn = extraBarn->getTotalCapacity() - extraBarn->getLeftoverCapacity();
-      if(amountInBarn > amount)
-      {
-        return extraBarn->removeCrops(amount);
-      }
-      else
-      {
-        total += extraBarn->removeCrops(amount);
-        amount -= amountInBarn;
-        if(amount > currentStored)
-        {
-          total += currentStored;
-          currentStored = 0;
-        }
-        else
-        {
-          currentStored -= amount;
-          total += amount; 
-        }
-      }
+      return extraBarn->removeCrops(amount);
+    } 
+    else 
+    {
+      total += extraBarn->removeCrops(amountInBarn);
+      amount -= amountInBarn;
     }
-    return total;
   }
-  currentStored -= amount;
-  return amount;
+  if (amount > currentStored) 
+  {
+    total += currentStored;
+    currentStored = 0;
+  } 
+  else 
+  {
+    currentStored -= amount;
+    total += amount;
+  }
+  return total;
 }
 
 void CropField::rain()
