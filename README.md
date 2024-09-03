@@ -1,3 +1,3 @@
 # COS214_P4
 
-install sudo apt-get install libsfml-dev to use
+run "sudo apt-get install libsfml-dev" to be able use the program
