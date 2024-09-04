@@ -12,8 +12,11 @@ Game::Game(int width , int height) : width(width) , height(height)
       setUnit(x , y , new CropField("Corn" , 100));
     }
   }
+  dfsTraversal(0,0);
+  bfsTraversal(0,0);
   this->runThread = std::thread(&Game::run, this);
   this->displayWindow();
+
 }
 
 void Game::loadTextures()
@@ -58,6 +61,23 @@ void Game::loadTextures()
   {
     std::cerr << "Failed to load Barn texture" << std::endl;
   }
+  if(!loadTextureAndCreateSprite("TruckLeft", "TruckLeft.png"))
+  {
+    std::cerr << "Failed to load TruckLeft texture" << std::endl;
+  }
+  if(!loadTextureAndCreateSprite("TruckRight", "TruckRight.png"))
+  {
+    std::cerr << "Failed to load TruckRight texture" << std::endl;
+  }
+  if(!loadTextureAndCreateSprite("TruckDown", "TruckDown.png"))
+  {
+    std::cerr << "Failed to load TruckDown texture" << std::endl;
+  }
+  if(!loadTextureAndCreateSprite("TruckUp", "TruckUp.png"))
+  {
+    std::cerr << "Failed to load TruckUp texture" << std::endl;
+  }
+
 }
 
 bool Game::loadTextureAndCreateSprite(const std::string& key, const std::string& filename) 
@@ -74,64 +94,74 @@ bool Game::loadTextureAndCreateSprite(const std::string& key, const std::string&
   return true;
 }
 
-
 void Game::run()
 {
   while (true) 
   {
-    for(int x = 0 ; x < width ; x++)
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  }
+}
+
+void Game::displayWindow()
+{
+  sf::RenderWindow window(sf::VideoMode((width+4) * tileSize, (height+4) * tileSize), "Pixel Art Grid");
+  window.setFramerateLimit(60);
+  while (window.isOpen())
+  {
+    sf::Event event;
+    while (window.pollEvent(event))
     {
-      for(int y = 0 ; y < height ; y++)
+      if (event.type == sf::Event::Closed)
       {
-        FarmUnit* unit = this->getUnit(x,y);
-        CropField* cropField = dynamic_cast<CropField*>(unit);
-        if (cropField)
+        window.close();
+      }
+      if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
+      {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        int x = (mousePos.x / tileSize) - 2; // Convert pixel position to grid position
+        int y = (mousePos.y / tileSize) - 2;
+        if (isWithinBounds(x, y))
         {
-          cropField->harvest();
-          cropField->rain();
+          FarmUnit* unit = getUnit(x, y);
+          CropField* cropField = dynamic_cast<CropField*>(unit);
+          CropField* currentCropField = dynamic_cast<CropField*>(currentFarm());
+          if (cropField && currentCropField && cropField == currentCropField)
+          {
+            if(!cropField->hasExtraBarn())
+            {
+              cropField->addExtraBarn();
+            }
+            else
+            {
+              cropField->removeExtraBarn();
+            }
+          }
         }
       }
     }
-    std::cout << getBFSBestTraversal() << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
+
+
+    window.clear(sf::Color::Blue);
+    displayFarm(window);
+    displayRoad(window);
+    // displayTraversal(window);
+    // displayHUD(window);
+    window.display();
   }
 }
 
-int Game::getBFSBestTraversal()
+void Game::bfsTraversal(int startX, int startY)
 {
-  int bestX = 0;
-  int bestY = 0;
-  int best = 0;
-  for(int x = 0 ; x < width ; x++)
+  if (!isWithinBounds(startX, startY)) 
   {
-    for(int y = 0 ; y < height ; y++)
-    {
-      if(x == 0 || x == width-1 || y == 0 || y == height-1)
-      {
-         if(this->bfsTruckTraversal(x,y) >= best)
-         {
-            best = bfsTruckTraversal(x,y);
-            bestX = x;
-            bestY = y;
-         }
-      }
-    }
-  }
-  return this->bfsTruckTraversal(bestX , bestY);
-}
-
-int Game::bfsTruckTraversal(int startX, int startY)
-{
-  if (!isWithinBounds(startX, startY) || !isTraversable(startX, startY)) 
-  {
-    return 0;
+    return;
   }
   std::unordered_set<Coords> visited;
   std::queue<Coords> queue;
   queue.push({startX, startY});
   visited.insert({startX, startY});
   bfsPath.clear();
-  int amountCrops = 0;
   while (!queue.empty()) 
   {
     Coords current = queue.front();
@@ -139,30 +169,52 @@ int Game::bfsTruckTraversal(int startX, int startY)
     int x = current.x;
     int y = current.y;
     bfsPath.push_back(current);
-    FarmUnit* unit = getUnit(x, y);
-    if (unit) 
-    {
-      CropField* cropField = dynamic_cast<CropField*>(unit);
-      if (cropField) 
-      {
-        int amount = cropField->removeCrops(1000);
-        cropField->addCrops(amount);
-        amountCrops += amount;
-      }
-    }
     std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
     for (const Coords& neighbor : neighbors) 
     {
       int nx = neighbor.x;
       int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && isTraversable(nx, ny) && visited.find(neighbor) == visited.end()) 
+      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
       {
         queue.push(neighbor);
         visited.insert(neighbor);
       }
     }
   }
-  return amountCrops;
+}
+
+void Game::dfsTraversal(int startX, int startY)
+{
+  if (!isWithinBounds(startX, startY)) 
+  {
+    return;
+  }
+  std::unordered_set<Coords> visited;
+  std::stack<Coords> stack;
+  stack.push({startX, startY});
+  visited.insert({startX, startY});
+  dfsPath.clear();
+
+  while (!stack.empty()) 
+  {
+    Coords current = stack.top();
+    stack.pop();
+
+    int x = current.x;
+    int y = current.y;
+    dfsPath.push_back(current);
+    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
+    for (const Coords& neighbor : neighbors) 
+    {
+      int nx = neighbor.x;
+      int ny = neighbor.y;
+      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
+      {
+        stack.push(neighbor);
+        visited.insert(neighbor);
+      }
+    }
+  }
 }
 
 bool Game::isWithinBounds(int x, int y) const 
@@ -170,50 +222,37 @@ bool Game::isWithinBounds(int x, int y) const
   return x >= 0 && x < width && y >= 0 && y < height;
 }
 
-bool Game::isTraversable(int x, int y) const
-{
-  FarmUnit* unit = getUnit(x, y);
-  if (!unit) return false;
-  CropField* cropField = dynamic_cast<CropField*>(unit);
-  if (cropField) 
-  {
-    std::string soilState = cropField->getSoilStateName();
-    return soilState != "Flooded";
-  }
-  return false; 
-}
+// void Game::displayTraversal(sf::RenderWindow& window)
+// {
+//   sf::Font font;
+//   if(!font.loadFromFile("lovedays.ttf"))
+//   {
+//     return;
+//   }
+//   int index = 1;
+//   for (const Coords& coord : bfsPath) 
+//   {
+//     sf::CircleShape circle(tileSize / 4);
+//     circle.setFillColor(sf::Color::Red);
+//     circle.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
+//     window.draw(circle);
 
-void Game::displayTraversal(sf::RenderWindow& window)
-{
-  sf::Font font;
-  if(!font.loadFromFile("lovedays.ttf"))
-  {
-    return;
-  }
-  int index = 1;
-  for (const Coords& coord : bfsPath) 
-  {
-    sf::CircleShape circle(tileSize / 4);
-    circle.setFillColor(sf::Color::Red);
-    circle.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
-    window.draw(circle);
+//     sf::Text text;
+//     text.setFont(font);
+//     text.setString(std::to_string(index));
+//     text.setCharacterSize(14);
+//     text.setFillColor(sf::Color::White);
+//     text.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
+//     sf::FloatRect textRect = text.getLocalBounds();
+//     text.setOrigin(textRect.width / 2, textRect.height / 2);
+//     text.setPosition((coord.x + 2) * tileSize + tileSize / 2 + tileSize / 4, 
+//                      (coord.y + 2) * tileSize + tileSize / 2 + tileSize / 4);
 
-    sf::Text text;
-    text.setFont(font);
-    text.setString(std::to_string(index));
-    text.setCharacterSize(14);
-    text.setFillColor(sf::Color::White);
-    text.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
-    sf::FloatRect textRect = text.getLocalBounds();
-    text.setOrigin(textRect.width / 2, textRect.height / 2);
-    text.setPosition((coord.x + 2) * tileSize + tileSize / 2 + tileSize / 4, 
-                     (coord.y + 2) * tileSize + tileSize / 2 + tileSize / 4);
+//     window.draw(text);
 
-    window.draw(text);
-
-    ++index;
-  }
-}
+//     ++index;
+//   }
+// }
 
 void Game::displayFarm(sf::RenderWindow& window)
 {
@@ -232,6 +271,18 @@ void Game::displayFarm(sf::RenderWindow& window)
           sf::Sprite sprite = it->second;
           sprite.setPosition((x+2) * tileSize, (y+2) * tileSize);
           window.draw(sprite);
+
+          CropField* currentCropField = dynamic_cast<CropField*>(currentFarm());
+          if(currentCropField && cropField == currentCropField)
+          {
+            sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+            highlight.setPosition((x+2) * tileSize +5, (y+2) * tileSize+5);
+            highlight.setFillColor(sf::Color::Transparent);
+            highlight.setOutlineThickness(5);
+            highlight.setOutlineColor(sf::Color::Yellow);
+            highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
+            window.draw(highlight);
+          }
           if(cropField->hasExtraBarn())
           {
             sf::Sprite barn = spriteMap.find("Barn")->second;
@@ -293,28 +344,6 @@ void Game::displayRoad(sf::RenderWindow& window)
   }
 }
 
-void Game::displayWindow()
-{
-  sf::RenderWindow window(sf::VideoMode((width+4) * tileSize, (height+4) * tileSize), "Pixel Art Grid");
-  while (window.isOpen())
-  {
-    sf::Event event;
-    while (window.pollEvent(event))
-    {
-      if (event.type == sf::Event::Closed)
-      {
-        window.close();
-      }
-    }
-    window.clear(sf::Color::Blue);
-    displayFarm(window);
-    displayRoad(window);
-    displayTraversal(window);
-  window.display();
-  }
-}
-
-
 void Game::setUnit(int x, int y, FarmUnit* unit)
 {
     delete farmMap[x][y];
@@ -324,6 +353,86 @@ void Game::setUnit(int x, int y, FarmUnit* unit)
 FarmUnit* Game::getUnit(int x, int y) const
 {
     return farmMap[x][y];
+}
+
+FarmUnit* Game::firstFarm()
+{
+  if(bfstraversal)
+  {
+    if(bfsPath.empty())
+    {
+      return nullptr;
+    }
+    currentIndex = 0;
+    return getUnit(bfsPath[currentIndex].x ,bfsPath[currentIndex].x);
+  }
+  else
+  {
+    if(dfsPath.empty())
+    {
+      return nullptr;
+    }
+    currentIndex = 0;
+    return getUnit(dfsPath[currentIndex].x ,dfsPath[currentIndex].x);
+  }
+  return nullptr;
+}
+
+FarmUnit* Game::next()
+{
+  if(bfstraversal)
+  {
+    if (currentIndex + 1 >= bfsPath.size()) 
+    {
+        return nullptr;
+    }
+    currentIndex++;
+    return getUnit(bfsPath[currentIndex].x, bfsPath[currentIndex].y);
+  }
+  else
+  {
+    if (currentIndex + 1 >= dfsPath.size()) 
+    {
+        return nullptr;
+    }
+    currentIndex++;
+    return getUnit(dfsPath[currentIndex].x, dfsPath[currentIndex].y);
+  }
+  return nullptr;
+}
+
+bool Game::isDone() const 
+{
+  if(bfstraversal)
+  {
+    return currentIndex >= bfsPath.size();
+  }
+  else
+  {
+    return currentIndex >= dfsPath.size();
+  }
+  return false;
+}
+
+FarmUnit* Game::currentFarm() const 
+{  
+  if(bfstraversal)
+  {
+    if (currentIndex >= (int)bfsPath.size()) 
+    {
+        return nullptr;
+    }
+    return getUnit(bfsPath[currentIndex].x, bfsPath[currentIndex].y);
+  }
+  else
+  {
+    if (currentIndex >= (int)dfsPath.size()) 
+    {
+        return nullptr;
+    }
+    return getUnit(dfsPath[currentIndex].x, dfsPath[currentIndex].y);
+  }
+  return nullptr;
 }
 
 Game::~Game()
