@@ -27,6 +27,7 @@ class CropField : public FarmUnit
     void notify();
     void addExtraBarn();
     bool hasExtraBarn();
+    void removeExtraBarn();
     void addCrops(int cropAmount) override;
     int removeCrops(int cropAmount) override;
     void rain();
