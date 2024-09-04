@@ -9,3 +9,8 @@ To Do list:
 - [ ] Add traversal functions ( nextFarm() , end() ...etc)
 - [ ] Add HUD to allow buing plots , extrabarns and managing farm
 - [ ] UML
+
+Idea
+
+Make the player choose using depth first or breadth first , and allocate an individual truck to each cropfield.
+So the player will go to each cropfield one by one using a traversal strategy and choose what to do at the selected cropfield ( buy trucks , harvest , add barn...etc)
