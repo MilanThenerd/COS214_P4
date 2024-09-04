@@ -98,8 +98,16 @@ void Game::run()
 {
   while (true) 
   {
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    if(this->isDone())
+    {
+      bfstraversal = !bfstraversal;
+      firstFarm();
+    }
+    else
+    {
+      next();
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
 }
 
@@ -221,38 +229,6 @@ bool Game::isWithinBounds(int x, int y) const
 {
   return x >= 0 && x < width && y >= 0 && y < height;
 }
-
-// void Game::displayTraversal(sf::RenderWindow& window)
-// {
-//   sf::Font font;
-//   if(!font.loadFromFile("lovedays.ttf"))
-//   {
-//     return;
-//   }
-//   int index = 1;
-//   for (const Coords& coord : bfsPath) 
-//   {
-//     sf::CircleShape circle(tileSize / 4);
-//     circle.setFillColor(sf::Color::Red);
-//     circle.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
-//     window.draw(circle);
-
-//     sf::Text text;
-//     text.setFont(font);
-//     text.setString(std::to_string(index));
-//     text.setCharacterSize(14);
-//     text.setFillColor(sf::Color::White);
-//     text.setPosition((coord.x + 2) * tileSize + tileSize / 2, (coord.y + 2) * tileSize + tileSize / 2);
-//     sf::FloatRect textRect = text.getLocalBounds();
-//     text.setOrigin(textRect.width / 2, textRect.height / 2);
-//     text.setPosition((coord.x + 2) * tileSize + tileSize / 2 + tileSize / 4, 
-//                      (coord.y + 2) * tileSize + tileSize / 2 + tileSize / 4);
-
-//     window.draw(text);
-
-//     ++index;
-//   }
-// }
 
 void Game::displayFarm(sf::RenderWindow& window)
 {
@@ -382,7 +358,7 @@ FarmUnit* Game::next()
 {
   if(bfstraversal)
   {
-    if (currentIndex + 1 >= bfsPath.size()) 
+    if (currentIndex + 1 >= (int)bfsPath.size()) 
     {
         return nullptr;
     }
@@ -391,7 +367,7 @@ FarmUnit* Game::next()
   }
   else
   {
-    if (currentIndex + 1 >= dfsPath.size()) 
+    if (currentIndex + 1 >= (int)dfsPath.size()) 
     {
         return nullptr;
     }
@@ -405,13 +381,12 @@ bool Game::isDone() const
 {
   if(bfstraversal)
   {
-    return currentIndex >= bfsPath.size();
+    return currentIndex >= (int)bfsPath.size()-1;
   }
   else
   {
-    return currentIndex >= dfsPath.size();
+    return currentIndex >= (int)dfsPath.size()-1;
   }
-  return false;
 }
 
 FarmUnit* Game::currentFarm() const 
