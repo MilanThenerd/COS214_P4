@@ -19,6 +19,6 @@ int main()
   // crop->increaseProduction();
   // crop->harvest();
   // std::cout << crop->getLeftoverCapacity() << std::endl;
-  Game* game = new Game(10,10);
+  Game* game = new Game(4,4);
   return 0;
 }

@@ -12,36 +12,36 @@
 #include <unordered_set>
 #include <memory>
 #include <map>
+#include <cmath>
+
+#ifdef USE_GUI
 #include <SFML/Graphics.hpp>
+#endif
 
 class Game
 {
   private:
     int width;
     int height;
-    const int tileSize = 64;
+    int tileSize = 213;
     bool bfstraversal = true;
     std::vector<std::vector<FarmUnit*>> farmMap;
-    std::map<std::string, std::shared_ptr<sf::Texture>> textureMap;
-    std::map<std::string, sf::Sprite> spriteMap;
-
     int currentIndex;
+    std::thread runThread;
     std::vector<Coords> bfsPath;
     std::vector<Coords> dfsPath;
 
-    std::thread runThread;
-    
+    #ifdef USE_GUI
+    std::map<std::string, std::shared_ptr<sf::Texture>> textureMap;
+    std::map<std::string, sf::Sprite> spriteMap;
     void loadTextures();
     bool loadTextureAndCreateSprite(const std::string& key, const std::string& filename);
-
     void displayFarm(sf::RenderWindow& window);
     void displayRoad(sf::RenderWindow& window);
-    //void displayTraversal(sf::RenderWindow& window);
-
+    #endif
     void bfsTraversal(int startX , int startY);
     void dfsTraversal(int startX , int startY);
     bool isWithinBounds(int x , int y) const;
-
     
   public:
     Game(int width , int height);
