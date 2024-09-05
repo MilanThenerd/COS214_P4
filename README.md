@@ -14,3 +14,10 @@ Idea
 
 Make the player choose using depth first or breadth first , and allocate an individual truck to each cropfield.
 So the player will go to each cropfield one by one using a traversal strategy and choose what to do at the selected cropfield ( buy trucks , harvest , add barn...etc)
+
+
+Move iterator to seperate
+Add subscriber , each farmunit speaks to same subscriber in queue like fashion
+Add farmUnitDecorator , tell game to talk to FarmUnit through Decorator
+
+
