@@ -1,3 +1,6 @@
+#ifndef COORDS_H
+#define COORDS_H
+
 #include <vector>
 #include <queue>
 #include <stack>
@@ -21,3 +24,5 @@ namespace std {
         }
     };
 }
+
+#endif

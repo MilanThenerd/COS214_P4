@@ -13,9 +13,11 @@ Game::Game(int width , int height) : width(width) , height(height)
     tileSize = std::max<float>(tileSize, baseTileSize / 2);
     tileSize = std::min<float>(tileSize, baseTileSize * 2);
   }
+
   #ifdef USE_GUI
   loadTextures();
   #endif
+  this->farmIterator = new FarmTraversal(this->farmMap,0,0,true);
   for(int x = 0 ; x < width ; x++)
   {
     for(int y = 0 ; y < height ; y++)
@@ -23,13 +25,11 @@ Game::Game(int width , int height) : width(width) , height(height)
       setUnit(x , y , new CropField("Corn" , 100));
     }
   }
-  dfsTraversal(0,0);
-  bfsTraversal(0,0);
   #ifdef USE_GUI
   this->runThread = std::thread(&Game::run, this);
   this->displayWindow();
   #else
-    // this->run();
+    //this->run();
   #endif
 
 }
@@ -38,89 +38,9 @@ void Game::run()
 {
   while (true) 
   {
-    if(this->isDone())
-    {
-      bfstraversal = !bfstraversal;
-      firstFarm();
-    }
-    else
-    {
-      next();
-    }
-    // Manage(currentFarm());
-    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+      currentIndex = (currentIndex + 1) % (int)farmIterator->length;
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
-}
-
-void Game::bfsTraversal(int startX, int startY)
-{
-  if (!isWithinBounds(startX, startY)) 
-  {
-    return;
-  }
-  std::unordered_set<Coords> visited;
-  std::queue<Coords> queue;
-  queue.push({startX, startY});
-  visited.insert({startX, startY});
-  bfsPath.clear();
-  while (!queue.empty()) 
-  {
-    Coords current = queue.front();
-    queue.pop();
-    int x = current.x;
-    int y = current.y;
-    bfsPath.push_back(current);
-    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        queue.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
-}
-
-void Game::dfsTraversal(int startX, int startY)
-{
-  if (!isWithinBounds(startX, startY)) 
-  {
-    return;
-  }
-  std::unordered_set<Coords> visited;
-  std::stack<Coords> stack;
-  stack.push({startX, startY});
-  visited.insert({startX, startY});
-  dfsPath.clear();
-
-  while (!stack.empty()) 
-  {
-    Coords current = stack.top();
-    stack.pop();
-
-    int x = current.x;
-    int y = current.y;
-    dfsPath.push_back(current);
-    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        stack.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
-}
-
-bool Game::isWithinBounds(int x, int y) const 
-{
-  return x >= 0 && x < width && y >= 0 && y < height;
 }
 
 #ifdef USE_GUI
@@ -216,90 +136,82 @@ void Game::displayWindow()
       if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
       {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-        int x = (mousePos.x / tileSize) - 2; // Convert pixel position to grid position
+        int x = (mousePos.x / tileSize) - 2;
         int y = (mousePos.y / tileSize) - 2;
-        if (isWithinBounds(x, y))
+        FarmUnit* unit = getUnit(x, y);
+        CropField* cropField = dynamic_cast<CropField*>(unit);
+        CropField* currentCropField = dynamic_cast<CropField*>(farmIterator->currentFarm());
+        if (cropField && currentCropField && cropField == currentCropField)
         {
-          FarmUnit* unit = getUnit(x, y);
-          CropField* cropField = dynamic_cast<CropField*>(unit);
-          CropField* currentCropField = dynamic_cast<CropField*>(currentFarm());
-          if (cropField && currentCropField && cropField == currentCropField)
+          if(!cropField->hasExtraBarn())
           {
-            if(!cropField->hasExtraBarn())
-            {
-              cropField->addExtraBarn();
-            }
-            else
-            {
-              cropField->removeExtraBarn();
-            }
+            cropField->addExtraBarn();
+          }
+          else
+          {
+            cropField->removeExtraBarn();
           }
         }
       }
     }
-
-
     window.clear(sf::Color::Blue);
     displayFarm(window);
     displayRoad(window);
-    // displayTraversal(window);
-    // displayHUD(window);
     window.display();
   }
 }
 
 void Game::displayFarm(sf::RenderWindow& window)
 {
-  for (int x = 0; x < width; ++x)
+  farmIterator->firstFarm();
+  while(farmIterator->hasNext())
   {
-    for (int y = 0; y < height; ++y)
+    FarmUnit* unit = farmIterator->currentFarm();
+    int x = farmIterator->path[farmIterator->currentIndex].x;
+    int y = farmIterator->path[farmIterator->currentIndex].y;
+    CropField* cropField = dynamic_cast<CropField*>(unit);
+    if (cropField)
     {
-      FarmUnit* unit = farmMap[x][y];
-      CropField* cropField = dynamic_cast<CropField*>(unit);
-      if (cropField)
+      std::string soilStateName = cropField->getSoilStateName();
+      auto it = spriteMap.find(soilStateName);
+      if (it != spriteMap.end())
       {
-        std::string soilStateName = cropField->getSoilStateName();
-        auto it = spriteMap.find(soilStateName);
-        if (it != spriteMap.end())
+        sf::Sprite sprite = it->second;
+        sprite.setPosition((x+2) * tileSize, (y+2) * tileSize);
+        sf::Vector2u textureSize = sprite.getTexture()->getSize();
+        sprite.setScale(
+          static_cast<float>(tileSize) / textureSize.x, 
+          static_cast<float>(tileSize) / textureSize.y
+        );
+        window.draw(sprite);
+        if(currentIndex == farmIterator->getIndex(unit))
         {
-          sf::Sprite sprite = it->second;
-          sprite.setPosition((x+2) * tileSize, (y+2) * tileSize);
+          sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+          highlight.setPosition((x+2) * tileSize +5, (y+2) * tileSize+5);
+          highlight.setFillColor(sf::Color::Transparent);
+          highlight.setOutlineThickness(5);
+          highlight.setOutlineColor(sf::Color::Yellow);
+          highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
+          window.draw(highlight);
+        }
+        if(cropField->hasExtraBarn())
+        {
+          sf::Sprite barn = spriteMap.find("Barn")->second;
+          barn.setPosition((x+2) * tileSize, (y+2) * tileSize);
           sf::Vector2u textureSize = sprite.getTexture()->getSize();
-          sprite.setScale(
+          barn.setScale(
               static_cast<float>(tileSize) / textureSize.x, 
               static_cast<float>(tileSize) / textureSize.y
           );
-          window.draw(sprite);
-
-          CropField* currentCropField = dynamic_cast<CropField*>(currentFarm());
-          if(currentCropField && cropField == currentCropField)
-          {
-            sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
-            highlight.setPosition((x+2) * tileSize +5, (y+2) * tileSize+5);
-            highlight.setFillColor(sf::Color::Transparent);
-            highlight.setOutlineThickness(5);
-            highlight.setOutlineColor(sf::Color::Yellow);
-            highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
-            window.draw(highlight);
-          }
-          if(cropField->hasExtraBarn())
-          {
-            sf::Sprite barn = spriteMap.find("Barn")->second;
-            barn.setPosition((x+2) * tileSize, (y+2) * tileSize);
-            sf::Vector2u textureSize = sprite.getTexture()->getSize();
-            barn.setScale(
-                static_cast<float>(tileSize) / textureSize.x, 
-                static_cast<float>(tileSize) / textureSize.y
-            );
-            window.draw(barn);
-          }
-        }
-        else
-        {
-          std::cerr << "Unknown soil state: " << soilStateName << std::endl;
+          window.draw(barn);
         }
       }
+      else
+      {
+        std::cerr << "Unknown soil state: " << soilStateName << std::endl;
+      }
     }
+    farmIterator->next();
   }
 }
 
@@ -356,92 +268,12 @@ void Game::displayRoad(sf::RenderWindow& window)
 #endif
 void Game::setUnit(int x, int y, FarmUnit* unit)
 {
-    delete farmMap[x][y];
-    farmMap[x][y] = unit;
+    farmIterator->insert(x , y , unit);
 }
 
-FarmUnit* Game::getUnit(int x, int y) const
+FarmUnit* Game::getUnit(int x , int y)
 {
-    return farmMap[x][y];
-}
-
-FarmUnit* Game::firstFarm()
-{
-  if(bfstraversal)
-  {
-    if(bfsPath.empty())
-    {
-      return nullptr;
-    }
-    currentIndex = 0;
-    return getUnit(bfsPath[currentIndex].x ,bfsPath[currentIndex].x);
-  }
-  else
-  {
-    if(dfsPath.empty())
-    {
-      return nullptr;
-    }
-    currentIndex = 0;
-    return getUnit(dfsPath[currentIndex].x ,dfsPath[currentIndex].x);
-  }
-  return nullptr;
-}
-
-FarmUnit* Game::next()
-{
-  if(bfstraversal)
-  {
-    if (currentIndex + 1 >= (int)bfsPath.size()) 
-    {
-        return nullptr;
-    }
-    currentIndex++;
-    return getUnit(bfsPath[currentIndex].x, bfsPath[currentIndex].y);
-  }
-  else
-  {
-    if (currentIndex + 1 >= (int)dfsPath.size()) 
-    {
-        return nullptr;
-    }
-    currentIndex++;
-    return getUnit(dfsPath[currentIndex].x, dfsPath[currentIndex].y);
-  }
-  return nullptr;
-}
-
-bool Game::isDone() const 
-{
-  if(bfstraversal)
-  {
-    return currentIndex >= (int)bfsPath.size()-1;
-  }
-  else
-  {
-    return currentIndex >= (int)dfsPath.size()-1;
-  }
-}
-
-FarmUnit* Game::currentFarm() const 
-{  
-  if(bfstraversal)
-  {
-    if (currentIndex >= (int)bfsPath.size()) 
-    {
-        return nullptr;
-    }
-    return getUnit(bfsPath[currentIndex].x, bfsPath[currentIndex].y);
-  }
-  else
-  {
-    if (currentIndex >= (int)dfsPath.size()) 
-    {
-        return nullptr;
-    }
-    return getUnit(dfsPath[currentIndex].x, dfsPath[currentIndex].y);
-  }
-  return nullptr;
+  return farmIterator->get(x , y);
 }
 
 Game::~Game()

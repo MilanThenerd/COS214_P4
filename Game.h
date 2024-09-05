@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "FarmUnit.h"
+#include "FarmTraversal.h"
 #include "CropField.h"
 #include "Barn.h"
 #include "Coords.h"
@@ -23,13 +24,12 @@ class Game
   private:
     int width;
     int height;
-    int tileSize = 213;
+    int tileSize = 64;
     bool bfstraversal = true;
-    std::vector<std::vector<FarmUnit*>> farmMap;
     int currentIndex;
+    std::vector<std::vector<FarmUnit*>> farmMap;
     std::thread runThread;
-    std::vector<Coords> bfsPath;
-    std::vector<Coords> dfsPath;
+    FarmTraversal* farmIterator;
 
     #ifdef USE_GUI
     std::map<std::string, std::shared_ptr<sf::Texture>> textureMap;
@@ -39,19 +39,14 @@ class Game
     void displayFarm(sf::RenderWindow& window);
     void displayRoad(sf::RenderWindow& window);
     #endif
-    void bfsTraversal(int startX , int startY);
-    void dfsTraversal(int startX , int startY);
     bool isWithinBounds(int x , int y) const;
+    void setUnit(int x, int y, FarmUnit* unit);
+    FarmUnit* getUnit(int x , int y);
     
   public:
     Game(int width , int height);
+    void setIteratorType(bool);
     void run();
-    void setUnit(int x, int y, FarmUnit* unit);
-    FarmUnit* getUnit(int x, int y) const;
-    FarmUnit* firstFarm();
-    FarmUnit* next();
-    bool isDone() const;
-    FarmUnit* currentFarm() const;
     void displayWindow();
     ~Game();
 };
