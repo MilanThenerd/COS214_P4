@@ -4,7 +4,18 @@
 Game::Game(int width , int height) : width(width) , height(height)
 {
   farmMap.resize(width, std::vector<FarmUnit*>(height, nullptr));
+  const float baseTileSize = 64.0f;
+  const int referenceMapSize = 10;
+  if (width > 0 && height > 0)
+  {
+    float mapSizeFactor = static_cast<float>(referenceMapSize) / std::max<float>(width, height);
+    tileSize = baseTileSize * mapSizeFactor;
+    tileSize = std::max<float>(tileSize, baseTileSize / 2);
+    tileSize = std::min<float>(tileSize, baseTileSize * 2);
+  }
+  #ifdef USE_GUI
   loadTextures();
+  #endif
   for(int x = 0 ; x < width ; x++)
   {
     for(int y = 0 ; y < height ; y++)
@@ -14,10 +25,105 @@ Game::Game(int width , int height) : width(width) , height(height)
   }
   dfsTraversal(0,0);
   bfsTraversal(0,0);
+  #ifdef USE_GUI
   this->runThread = std::thread(&Game::run, this);
   this->displayWindow();
+  #else
+    // this->run();
+  #endif
 
 }
+
+void Game::run()
+{
+  while (true) 
+  {
+    if(this->isDone())
+    {
+      bfstraversal = !bfstraversal;
+      firstFarm();
+    }
+    else
+    {
+      next();
+    }
+    // Manage(currentFarm());
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+  }
+}
+
+void Game::bfsTraversal(int startX, int startY)
+{
+  if (!isWithinBounds(startX, startY)) 
+  {
+    return;
+  }
+  std::unordered_set<Coords> visited;
+  std::queue<Coords> queue;
+  queue.push({startX, startY});
+  visited.insert({startX, startY});
+  bfsPath.clear();
+  while (!queue.empty()) 
+  {
+    Coords current = queue.front();
+    queue.pop();
+    int x = current.x;
+    int y = current.y;
+    bfsPath.push_back(current);
+    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
+    for (const Coords& neighbor : neighbors) 
+    {
+      int nx = neighbor.x;
+      int ny = neighbor.y;
+      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
+      {
+        queue.push(neighbor);
+        visited.insert(neighbor);
+      }
+    }
+  }
+}
+
+void Game::dfsTraversal(int startX, int startY)
+{
+  if (!isWithinBounds(startX, startY)) 
+  {
+    return;
+  }
+  std::unordered_set<Coords> visited;
+  std::stack<Coords> stack;
+  stack.push({startX, startY});
+  visited.insert({startX, startY});
+  dfsPath.clear();
+
+  while (!stack.empty()) 
+  {
+    Coords current = stack.top();
+    stack.pop();
+
+    int x = current.x;
+    int y = current.y;
+    dfsPath.push_back(current);
+    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
+    for (const Coords& neighbor : neighbors) 
+    {
+      int nx = neighbor.x;
+      int ny = neighbor.y;
+      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
+      {
+        stack.push(neighbor);
+        visited.insert(neighbor);
+      }
+    }
+  }
+}
+
+bool Game::isWithinBounds(int x, int y) const 
+{
+  return x >= 0 && x < width && y >= 0 && y < height;
+}
+
+#ifdef USE_GUI
 
 void Game::loadTextures()
 {
@@ -94,23 +200,6 @@ bool Game::loadTextureAndCreateSprite(const std::string& key, const std::string&
   return true;
 }
 
-void Game::run()
-{
-  while (true) 
-  {
-    if(this->isDone())
-    {
-      bfstraversal = !bfstraversal;
-      firstFarm();
-    }
-    else
-    {
-      next();
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-  }
-}
-
 void Game::displayWindow()
 {
   sf::RenderWindow window(sf::VideoMode((width+4) * tileSize, (height+4) * tileSize), "Pixel Art Grid");
@@ -159,77 +248,6 @@ void Game::displayWindow()
   }
 }
 
-void Game::bfsTraversal(int startX, int startY)
-{
-  if (!isWithinBounds(startX, startY)) 
-  {
-    return;
-  }
-  std::unordered_set<Coords> visited;
-  std::queue<Coords> queue;
-  queue.push({startX, startY});
-  visited.insert({startX, startY});
-  bfsPath.clear();
-  while (!queue.empty()) 
-  {
-    Coords current = queue.front();
-    queue.pop();
-    int x = current.x;
-    int y = current.y;
-    bfsPath.push_back(current);
-    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        queue.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
-}
-
-void Game::dfsTraversal(int startX, int startY)
-{
-  if (!isWithinBounds(startX, startY)) 
-  {
-    return;
-  }
-  std::unordered_set<Coords> visited;
-  std::stack<Coords> stack;
-  stack.push({startX, startY});
-  visited.insert({startX, startY});
-  dfsPath.clear();
-
-  while (!stack.empty()) 
-  {
-    Coords current = stack.top();
-    stack.pop();
-
-    int x = current.x;
-    int y = current.y;
-    dfsPath.push_back(current);
-    std::vector<Coords> neighbors = {{x+1, y}, {x-1, y}, {x, y+1}, {x, y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        stack.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
-}
-
-bool Game::isWithinBounds(int x, int y) const 
-{
-  return x >= 0 && x < width && y >= 0 && y < height;
-}
-
 void Game::displayFarm(sf::RenderWindow& window)
 {
   for (int x = 0; x < width; ++x)
@@ -246,6 +264,11 @@ void Game::displayFarm(sf::RenderWindow& window)
         {
           sf::Sprite sprite = it->second;
           sprite.setPosition((x+2) * tileSize, (y+2) * tileSize);
+          sf::Vector2u textureSize = sprite.getTexture()->getSize();
+          sprite.setScale(
+              static_cast<float>(tileSize) / textureSize.x, 
+              static_cast<float>(tileSize) / textureSize.y
+          );
           window.draw(sprite);
 
           CropField* currentCropField = dynamic_cast<CropField*>(currentFarm());
@@ -263,6 +286,11 @@ void Game::displayFarm(sf::RenderWindow& window)
           {
             sf::Sprite barn = spriteMap.find("Barn")->second;
             barn.setPosition((x+2) * tileSize, (y+2) * tileSize);
+            sf::Vector2u textureSize = sprite.getTexture()->getSize();
+            barn.setScale(
+                static_cast<float>(tileSize) / textureSize.x, 
+                static_cast<float>(tileSize) / textureSize.y
+            );
             window.draw(barn);
           }
         }
@@ -313,6 +341,11 @@ void Game::displayRoad(sf::RenderWindow& window)
         {
           sf::Sprite sprite = it->second;
           sprite.setPosition((x+1) * tileSize, (y+1) * tileSize);
+          sf::Vector2u textureSize = sprite.getTexture()->getSize();
+          sprite.setScale(
+              static_cast<float>(tileSize) / textureSize.x, 
+              static_cast<float>(tileSize) / textureSize.y
+          );
           window.draw(sprite);
         }
       }
@@ -320,6 +353,7 @@ void Game::displayRoad(sf::RenderWindow& window)
   }
 }
 
+#endif
 void Game::setUnit(int x, int y, FarmUnit* unit)
 {
     delete farmMap[x][y];
