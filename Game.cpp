@@ -140,8 +140,7 @@ void Game::displayWindow()
         int y = (mousePos.y / tileSize) - 2;
         FarmUnit* unit = getUnit(x, y);
         CropField* cropField = dynamic_cast<CropField*>(unit);
-        CropField* currentCropField = dynamic_cast<CropField*>(farmIterator->currentFarm());
-        if (cropField && currentCropField && cropField == currentCropField)
+        if (cropField && currentIndex == farmIterator->getIndex(unit))
         {
           if(!cropField->hasExtraBarn())
           {
