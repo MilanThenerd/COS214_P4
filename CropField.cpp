@@ -8,17 +8,16 @@ CropField::CropField(std::string crop , int capacity)
   this->totalCapacity = capacity;
   this->currentStored = 0;
   this->soilState = new DrySoil();
-  extraBarn = nullptr; 
 }
 
 int CropField::getTotalCapacity() const
 {
-  return extraBarn ? totalCapacity + extraBarn->getTotalCapacity() : totalCapacity;
+  return totalCapacity;
 }
 
 int CropField::getLeftoverCapacity() const 
 {
-  return (totalCapacity - currentStored) + (extraBarn ? extraBarn->getLeftoverCapacity() : 0);
+  return (totalCapacity - currentStored);
 }
 
 std::string CropField::getCropType() const
@@ -47,62 +46,27 @@ void CropField::harvest()
   addCrops(crops);
 }
 
-void CropField::addExtraBarn()
-{
-  extraBarn = new Barn(this->cropType, totalCapacity/2);
-}
-
-void CropField::removeExtraBarn()
-{
-  if(hasExtraBarn())
-  {
-    delete extraBarn;
-    extraBarn = nullptr;
-  }
-}
-
 void CropField::addCrops(int amount)
 {
   currentStored += amount;
   if(currentStored > getTotalCapacity())
   {
-    if(extraBarn)
-    {
-      extraBarn->addCrops(currentStored-totalCapacity);
-      currentStored -= totalCapacity;
-    }
-    else
-    {
-      currentStored = totalCapacity;
-    }
+    currentStored = totalCapacity;
   }
 }
 
 int CropField::removeCrops(int amount)
 {
   int total = 0;
-  if (extraBarn) 
-  {
-    int amountInBarn = extraBarn->getTotalCapacity() - extraBarn->getLeftoverCapacity();
-    if (amountInBarn >= amount) 
-    {
-      return extraBarn->removeCrops(amount);
-    } 
-    else 
-    {
-      total += extraBarn->removeCrops(amountInBarn);
-      amount -= amountInBarn;
-    }
-  }
   if (amount > currentStored) 
   {
-    total += currentStored;
+    total = currentStored;
     currentStored = 0;
   } 
   else 
   {
     currentStored -= amount;
-    total += amount;
+    total = amount;
   }
   return total;
 }
@@ -123,22 +87,8 @@ void CropField::rain()
   }
 }
 
-bool CropField::hasExtraBarn()
-{
-  if(extraBarn)
-  {
-    return true;
-  }
-  return false;
-}
-
 CropField::~CropField()
 {
   delete soilState;
   soilState = nullptr;
-  if(extraBarn)
-  {
-    delete extraBarn;
-    extraBarn = nullptr;
-  }
 }

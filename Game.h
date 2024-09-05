@@ -1,10 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "FarmUnit.h"
+#include "FarmUnitDecorator.h"
+#include "BarnDecorator.h"
 #include "FarmTraversal.h"
 #include "CropField.h"
-#include "Barn.h"
 #include "Coords.h"
 #include <thread>
 #include <vector>
@@ -38,10 +38,11 @@ class Game
     bool loadTextureAndCreateSprite(const std::string& key, const std::string& filename);
     void displayFarm(sf::RenderWindow& window);
     void displayRoad(sf::RenderWindow& window);
+    void drawSprite(sf::RenderWindow& window, const sf::Sprite& sprite, int x, int y);
     #endif
-    bool isWithinBounds(int x , int y) const;
     void setUnit(int x, int y, FarmUnit* unit);
     FarmUnit* getUnit(int x , int y);
+    void rain();
     
   public:
     Game(int width , int height);

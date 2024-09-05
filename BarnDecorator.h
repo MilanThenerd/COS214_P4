@@ -1,32 +1,25 @@
-#ifndef CROPFIELD_H
-#define CROPFIELD_H
+#ifndef BARNDECORATOR_H
+#define BARNDECORATOR_H
 
-#include "FarmUnit.h"
+#include "FarmUnitDecorator.h"
 #include "Barn.h"
-#include "SoilState.h"
-#include "DrySoil.h"
-#include "FruitfulSoil.h"
-#include "FloodedSoil.h"
 
-#include <cstdlib>
-
-class CropField : public FarmUnit
+class BarnDecorator : public FarmUnitDecorator
 {
   private:
-    SoilState* soilState;
-    bool fertilizer;
+    Barn* barn;
   public:
-    CropField(std::string crop , int capacity);
+    BarnDecorator(FarmUnit* unit);
     int getTotalCapacity() const override;
     std::string getCropType() const override;
     std::string getSoilStateName() const;
     void increaseProduction();
     void harvest();
     int getLeftoverCapacity() const;
-    void notify(){};
+    void notify();
     void addCrops(int cropAmount) override;
     int removeCrops(int cropAmount) override;
     void rain();
-    ~CropField();
+    ~BarnDecorator();
 };
 #endif

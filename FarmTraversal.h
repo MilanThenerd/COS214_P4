@@ -27,6 +27,7 @@ class FarmTraversal
     size_t currentIndex;
 
   private:
+    bool contains(int x , int y) const;
     bool isWithinBounds(int x, int y) const;
     void bfsTraversal();
     void dfsTraversal();

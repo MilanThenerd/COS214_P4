@@ -39,7 +39,23 @@ void Game::run()
   while (true) 
   {
       currentIndex = (currentIndex + 1) % (int)farmIterator->length;
+      // rain();
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  }
+}
+
+void Game::rain()
+{
+  farmIterator->firstFarm();
+  while(farmIterator->hasNext())
+  {
+    FarmUnit* unit = farmIterator->currentFarm();
+    CropField* cropField = dynamic_cast<CropField*>(unit);
+    if(cropField)
+    {
+      cropField->rain();
+    }
+    farmIterator->next();
   }
 }
 
@@ -140,16 +156,18 @@ void Game::displayWindow()
         int y = (mousePos.y / tileSize) - 2;
         FarmUnit* unit = getUnit(x, y);
         CropField* cropField = dynamic_cast<CropField*>(unit);
-        if (cropField && currentIndex == farmIterator->getIndex(unit))
+        std::string type = unit->getCropType();
+        int amount = unit->getTotalCapacity()-unit->getLeftoverCapacity();
+        BarnDecorator* barnDecorator = dynamic_cast<BarnDecorator*>(unit);
+        if (!cropField && currentIndex == farmIterator->getIndex(unit))
         {
-          if(!cropField->hasExtraBarn())
-          {
-            cropField->addExtraBarn();
-          }
-          else
-          {
-            cropField->removeExtraBarn();
-          }
+          CropField* newUnit = new CropField(type,100);
+          newUnit->addCrops(amount);
+          setUnit(x , y , newUnit); 
+        }
+        else if(cropField && currentIndex == farmIterator->getIndex(unit))
+        {
+          setUnit(x , y , new BarnDecorator(cropField));
         }
       }
     }
@@ -163,46 +181,26 @@ void Game::displayWindow()
 void Game::displayFarm(sf::RenderWindow& window)
 {
   farmIterator->firstFarm();
-  while(farmIterator->hasNext())
+  while (farmIterator->hasNext())
   {
     FarmUnit* unit = farmIterator->currentFarm();
     int x = farmIterator->path[farmIterator->currentIndex].x;
     int y = farmIterator->path[farmIterator->currentIndex].y;
-    CropField* cropField = dynamic_cast<CropField*>(unit);
-    if (cropField)
+
+    if (BarnDecorator* barnDecorator = dynamic_cast<BarnDecorator*>(unit))
     {
-      std::string soilStateName = cropField->getSoilStateName();
-      auto it = spriteMap.find(soilStateName);
-      if (it != spriteMap.end())
+      std::string soilStateName = barnDecorator->getSoilStateName();
+      if (auto it = spriteMap.find(soilStateName); it != spriteMap.end())
       {
-        sf::Sprite sprite = it->second;
-        sprite.setPosition((x+2) * tileSize, (y+2) * tileSize);
-        sf::Vector2u textureSize = sprite.getTexture()->getSize();
-        sprite.setScale(
-          static_cast<float>(tileSize) / textureSize.x, 
-          static_cast<float>(tileSize) / textureSize.y
-        );
-        window.draw(sprite);
-        if(currentIndex == farmIterator->getIndex(unit))
+        drawSprite(window, it->second, x, y);
+
+        if (auto barnIt = spriteMap.find("Barn"); barnIt != spriteMap.end())
         {
-          sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
-          highlight.setPosition((x+2) * tileSize +5, (y+2) * tileSize+5);
-          highlight.setFillColor(sf::Color::Transparent);
-          highlight.setOutlineThickness(5);
-          highlight.setOutlineColor(sf::Color::Yellow);
-          highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
-          window.draw(highlight);
+          drawSprite(window, barnIt->second, x, y);
         }
-        if(cropField->hasExtraBarn())
+        else
         {
-          sf::Sprite barn = spriteMap.find("Barn")->second;
-          barn.setPosition((x+2) * tileSize, (y+2) * tileSize);
-          sf::Vector2u textureSize = sprite.getTexture()->getSize();
-          barn.setScale(
-              static_cast<float>(tileSize) / textureSize.x, 
-              static_cast<float>(tileSize) / textureSize.y
-          );
-          window.draw(barn);
+          std::cerr << "Barn sprite not found in spriteMap." << std::endl;
         }
       }
       else
@@ -210,9 +208,44 @@ void Game::displayFarm(sf::RenderWindow& window)
         std::cerr << "Unknown soil state: " << soilStateName << std::endl;
       }
     }
-    farmIterator->next();
+    else if (CropField* cropField = dynamic_cast<CropField*>(unit))
+    {
+      std::string soilStateName = cropField->getSoilStateName();
+      if (auto it = spriteMap.find(soilStateName); it != spriteMap.end())
+      {
+        drawSprite(window, it->second, x, y);
+      }
+      else
+      {
+        std::cerr << "Unknown soil state: " << soilStateName << std::endl;
+      }
+    }
+    if (currentIndex == farmIterator->getIndex(unit))
+    {
+      sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+      highlight.setPosition((x + 2) * tileSize + 5, (y + 2) * tileSize + 5);
+      highlight.setFillColor(sf::Color::Transparent);
+      highlight.setOutlineThickness(5);
+      highlight.setOutlineColor(sf::Color::Yellow);
+      highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
+      window.draw(highlight);
+    }
+  farmIterator->next();
   }
 }
+
+void Game::drawSprite(sf::RenderWindow& window, const sf::Sprite& sprite, int x, int y)
+{
+    sf::Sprite tempSprite = sprite;
+    tempSprite.setPosition((x + 2) * tileSize, (y + 2) * tileSize);
+    sf::Vector2u textureSize = tempSprite.getTexture()->getSize();
+    tempSprite.setScale(
+        static_cast<float>(tileSize) / textureSize.x,
+        static_cast<float>(tileSize) / textureSize.y
+    );
+    window.draw(tempSprite);
+}
+
 
 void Game::displayRoad(sf::RenderWindow& window)
 {

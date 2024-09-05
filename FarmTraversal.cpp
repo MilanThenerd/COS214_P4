@@ -1,5 +1,7 @@
 #include "FarmTraversal.h"
 
+#include<iostream>
+
 FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX, int startY, bool type)
     : farmMap(farmMap), startX(startX), startY(startY), type(type), currentIndex(0)
 {
@@ -26,14 +28,31 @@ void FarmTraversal::insert(int x, int y, FarmUnit* unit)
 {
     if (isWithinBounds(x, y))
     {
-      farmMap[x][y] = unit; 
-      length++;
+      if(!contains(x,y))
+      {
+        length++;
+      }
+      farmMap[x][y] = unit;; 
     } 
+    this->initialize();
+}
+
+bool FarmTraversal::contains(int x , int y) const
+{
+  if(farmMap[x][y] != nullptr)
+  {
+    return true;
+  }
+  return false;
 }
 
 FarmUnit* FarmTraversal::get(int x , int y)
 {
-  return farmMap[x][y];
+  if (isWithinBounds(x, y))
+  {
+    return farmMap[x][y];
+  }
+  return nullptr;
 }
 
 void FarmTraversal::bfsTraversal() 
