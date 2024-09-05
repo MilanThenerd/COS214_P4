@@ -52,6 +52,15 @@ void CropField::addExtraBarn()
   extraBarn = new Barn(this->cropType, totalCapacity/2);
 }
 
+void CropField::removeExtraBarn()
+{
+  if(hasExtraBarn())
+  {
+    delete extraBarn;
+    extraBarn = nullptr;
+  }
+}
+
 void CropField::addCrops(int amount)
 {
   currentStored += amount;
