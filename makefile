@@ -1,32 +1,31 @@
-# Define the C++ compiler to use
 CXX = g++
-
-# Compiler flags
 CXXFLAGS = -Wall -std=c++17
 
-LIBS = -lsfml-graphics -lsfml-window -lsfml-system
-
-# The binary name
 TARGET = Game
-
-# List of source files
-SOURCES = $(wildcard *.cpp)
-
-# The object files
 OBJECTS = $(SOURCES:.cpp=.o)
 
-all: $(TARGET)
+SOURCES = *.cpp
+
+all: build-without-gui
+
+build-without-gui: $(TARGET)
+
+build-with-gui: CXXFLAGS += -DUSE_GUI -lsfml-graphics -lsfml-window -lsfml-system
+build-with-gui: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
 
-.cpp.o:
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 
-run: all
+run: clean build-without-gui
 	./Game
 
-valgrind: 
+demo: clean build-with-gui
+	./Game
+
+.PHONY: all clean
