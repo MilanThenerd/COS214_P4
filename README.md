@@ -23,19 +23,17 @@ To Do list:
     - [X] X2 crops?
   - [X] State transitions
     - [X] Dry → Regular → Fruitful → Flooded
-    - [ ] If a FarmUnit is fertilized, it is always fruitful but floods more easily.
+    - [X] If a FarmUnit is fertilized, it is always fruitful but floods more easily.
     - [ ] Look at "Other" to see if we want to do weather-based transitions
 
 - [ ] Component 3
   - [ ] Rename BarnDecorator to ExtraBarnDecorator
     - [ ] It provides extra storage on top of the storage the FarmUnit it contains has. It can be built on ALL farm units, CropFields, and Barns.
       - [ ] Maybe we fill up base FarmUnit storage and put the overflow in the ExtraBarn storage?
-  - [ ] Implement FertilizerDecorator
-    - [ ] Essentially ensures that the FarmUnit it contains is fruitful no matter if it was Dry/Regular.
-    - [ ] FarmUnit can still flood.
+  - [X] Implement FertilizerDecorator
+    - [X] Essentially ensures that the FarmUnit it contains is fruitful no matter if it was Dry/Regular.
+    - [X] FarmUnit can still flood.
     - [ ] Has a certain amount of fertilizer, needs to be replenished by calling a fertilizer truck.
-  - [ ] FarmUnitDecorator
-    - [ ] Has `harvest()` function, does nothing if built around a Barn.
 
 - [ ] Component 4 Milan
   - [ ] Observer Pattern:
