@@ -21,8 +21,8 @@ SoilState *FruitfulSoil::rain()
     {
       return new FloodedSoil();
     }
-    return new FruitfulSoil();
   }
+  return new FruitfulSoil();
 }
 
 std::string FruitfulSoil::getName() const

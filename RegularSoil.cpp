@@ -14,10 +14,7 @@ SoilState *RegularSoil::rain()
     return new DrySoil();
   }
   // Rain
-  else if (random == 1)
-  {
-    return new FruitfulSoil();
-  }
+  return new FruitfulSoil();
 }
 
 std::string RegularSoil::getName() const

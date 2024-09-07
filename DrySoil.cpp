@@ -14,10 +14,7 @@ SoilState *DrySoil::rain()
     return new DrySoil();
   }
   // Rain
-  else if (random == 1)
-  {
-    return new RegularSoil();
-  }
+  return new RegularSoil();
 }
 
 std::string DrySoil::getName() const

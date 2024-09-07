@@ -1,8 +1,8 @@
 #include "BarnDecorator.h"
 
-BarnDecorator::BarnDecorator(FarmUnit* unit) : FarmUnitDecorator(unit)
+BarnDecorator::BarnDecorator(FarmUnit *unit) : FarmUnitDecorator(unit)
 {
-  this->barn = new Barn(this->cropType,100);
+  this->barn = new Barn(this->cropType, 100);
 }
 
 BarnDecorator::~BarnDecorator()
@@ -22,8 +22,8 @@ std::string BarnDecorator::getCropType() const
 
 std::string BarnDecorator::getSoilStateName() const
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if (cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     return cropField->getSoilStateName();
   }
@@ -32,8 +32,8 @@ std::string BarnDecorator::getSoilStateName() const
 
 void BarnDecorator::increaseProduction()
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if (cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     cropField->increaseProduction();
   }
@@ -41,8 +41,8 @@ void BarnDecorator::increaseProduction()
 
 void BarnDecorator::harvest()
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if (cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     cropField->harvest();
   }
@@ -55,8 +55,8 @@ int BarnDecorator::getLeftoverCapacity() const
 
 void BarnDecorator::notify()
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if (cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     cropField->notify();
   }
@@ -64,12 +64,12 @@ void BarnDecorator::notify()
 
 void BarnDecorator::addCrops(int amount)
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if(cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
-    if(cropField->getLeftoverCapacity() > 0)
+    if (cropField->getLeftoverCapacity() > 0)
     {
-      cropField->addCrops(amount-cropField->getLeftoverCapacity());
+      cropField->addCrops(amount - cropField->getLeftoverCapacity());
     }
     this->barn->addCrops(amount);
   }
@@ -78,13 +78,13 @@ void BarnDecorator::addCrops(int amount)
 int BarnDecorator::removeCrops(int amount)
 {
   int total = 0;
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if(cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     total += cropField->removeCrops(amount);
-    if(total != amount)
+    if (total != amount)
     {
-      this->barn->removeCrops(amount-total);
+      this->barn->removeCrops(amount - total);
     }
   }
   return total;
@@ -92,8 +92,8 @@ int BarnDecorator::removeCrops(int amount)
 
 void BarnDecorator::rain()
 {
-  CropField* cropField = dynamic_cast<CropField*>(this->decoratedUnit);
-  if(cropField) 
+  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+  if (cropField)
   {
     cropField->rain();
   }

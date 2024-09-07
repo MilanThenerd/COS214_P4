@@ -20,10 +20,7 @@ SoilState *FloodedSoil::rain()
     return new FruitfulSoil();
   }
   // Rain
-  else if (random == 1)
-  {
-    return new FloodedSoil();
-  }
+  return new FloodedSoil();
 }
 
 std::string FloodedSoil::getName() const
