@@ -17,7 +17,8 @@ Game::Game(int width, int height) : width(width), height(height)
 #ifdef USE_GUI
   loadTextures();
 #endif
-  setIterator(true);
+  setIterator(false);
+  weatherIterator = new FarmTraversalBFS(farmMap, 0, 0);
   for (int x = 0; x < width; x++)
   {
     for (int y = 0; y < height; y++)
@@ -118,6 +119,10 @@ void Game::loadTextures()
   {
     std::cerr << "Failed to load TruckUp texture" << std::endl;
   }
+  if (!loadTextureAndCreateSprite("Cloud", "Cloud.png"))
+  {
+    std::cerr << "Failed to load Cloud texture" << std::endl;
+  }
 }
 
 bool Game::loadTextureAndCreateSprite(const std::string &key, const std::string &filename)
@@ -179,6 +184,7 @@ void Game::displayWindow()
 void Game::displayFarm(sf::RenderWindow &window)
 {
   farmIterator->firstFarm();
+  weatherIterator->firstFarm();
   while (farmIterator->hasNext())
   {
     FarmUnit *unit = farmIterator->currentFarm();
@@ -228,7 +234,23 @@ void Game::displayFarm(sf::RenderWindow &window)
       highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
       window.draw(highlight);
     }
+    if (currentIndex == weatherIterator->getIndex(unit))
+    {
+      // sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
+      // highlight.setPosition((x + 2) * tileSize + 5, (y + 2) * tileSize + 5);
+      // highlight.setFillColor(sf::Color::Transparent);
+      // highlight.setOutlineThickness(5);
+      // highlight.setOutlineColor(sf::Color::Yellow);
+      // highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
+      // window.draw(highlight);
+
+      if (auto barnIt = spriteMap.find("Cloud"); barnIt != spriteMap.end())
+      {
+        drawSprite(window, barnIt->second, x, y);
+      }
+    }
     farmIterator->next();
+    weatherIterator->next();
   }
 }
 

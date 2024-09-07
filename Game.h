@@ -31,6 +31,7 @@ private:
   std::vector<std::vector<FarmUnit *>> farmMap;
   std::thread runThread;
   FarmTraversal *farmIterator;
+  FarmTraversal *weatherIterator;
 
 #ifdef USE_GUI
   std::map<std::string, std::shared_ptr<sf::Texture>> textureMap;
