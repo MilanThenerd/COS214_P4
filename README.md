@@ -37,7 +37,7 @@ To Do list:
   - [ ] FarmUnitDecorator
     - [ ] Has `harvest()` function, does nothing if built around a Barn.
 
-- [ ] Component 4
+- [ ] Component 4 Milan
   - [ ] Observer Pattern:
     - [ ] Fertilizer truck
       - [ ] Gets notified by FertilizerDecorator when fertilizer needs to be replenished.
