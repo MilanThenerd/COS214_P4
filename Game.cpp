@@ -1,9 +1,9 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game(int width , int height) : width(width) , height(height)
+Game::Game(int width, int height) : width(width), height(height)
 {
-  farmMap.resize(width, std::vector<FarmUnit*>(height, nullptr));
+  farmMap.resize(width, std::vector<FarmUnit *>(height, nullptr));
   const float baseTileSize = 64.0f;
   const int referenceMapSize = 10;
   if (width > 0 && height > 0)
@@ -14,44 +14,43 @@ Game::Game(int width , int height) : width(width) , height(height)
     tileSize = std::min<float>(tileSize, baseTileSize * 2);
   }
 
-  #ifdef USE_GUI
+#ifdef USE_GUI
   loadTextures();
-  #endif
+#endif
   setIterator(true);
-  for(int x = 0 ; x < width ; x++)
+  for (int x = 0; x < width; x++)
   {
-    for(int y = 0 ; y < height ; y++)
+    for (int y = 0; y < height; y++)
     {
-      setUnit(x , y , new CropField("Corn" , 100));
+      setUnit(x, y, new CropField("Corn", 100));
     }
   }
-  #ifdef USE_GUI
+#ifdef USE_GUI
   this->runThread = std::thread(&Game::run, this);
   this->displayWindow();
-  #else
-    //this->run();
-  #endif
-
+#else
+  // this->run();
+#endif
 }
 
 void Game::run()
 {
-  while (true) 
+  while (true)
   {
-      currentIndex = (currentIndex + 1) % (int)farmIterator->getLength();
-      // rain();
-      std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    currentIndex = (currentIndex + 1) % (int)farmIterator->getLength();
+    // rain();
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
 }
 
 void Game::rain()
 {
   farmIterator->firstFarm();
-  while(farmIterator->hasNext())
+  while (farmIterator->hasNext())
   {
-    FarmUnit* unit = farmIterator->currentFarm();
-    CropField* cropField = dynamic_cast<CropField*>(unit);
-    if(cropField)
+    FarmUnit *unit = farmIterator->currentFarm();
+    CropField *cropField = dynamic_cast<CropField *>(unit);
+    if (cropField)
     {
       cropField->rain();
     }
@@ -63,69 +62,68 @@ void Game::rain()
 
 void Game::loadTextures()
 {
-  if(!loadTextureAndCreateSprite("Dry", "Dry.png"))
+  if (!loadTextureAndCreateSprite("Dry", "Dry.png"))
   {
     std::cerr << "Failed to load Dry texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("Flooded", "Flooded.png"))
+  if (!loadTextureAndCreateSprite("Flooded", "Flooded.png"))
   {
     std::cerr << "Failed to load Flooded texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("Fruitful", "Fruitful.png"))
+  if (!loadTextureAndCreateSprite("Fruitful", "Fruitful.png"))
   {
     std::cerr << "Failed to load Fruitful texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("Vertical", "Vertical.png"))
+  if (!loadTextureAndCreateSprite("Vertical", "Vertical.png"))
   {
     std::cerr << "Failed to load Vertical texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("Horisontal", "Horisontal.png"))
+  if (!loadTextureAndCreateSprite("Horisontal", "Horisontal.png"))
   {
     std::cerr << "Failed to load Horisontal texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TopLeft", "TopLeft.png"))
+  if (!loadTextureAndCreateSprite("TopLeft", "TopLeft.png"))
   {
     std::cerr << "Failed to load TopLeft texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("BottomLeft", "BottomLeft.png"))
+  if (!loadTextureAndCreateSprite("BottomLeft", "BottomLeft.png"))
   {
     std::cerr << "Failed to load BottomLeft texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TopRight", "TopRight.png"))
+  if (!loadTextureAndCreateSprite("TopRight", "TopRight.png"))
   {
     std::cerr << "Failed to load TopRight texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("BottomRight", "BottomRight.png"))
+  if (!loadTextureAndCreateSprite("BottomRight", "BottomRight.png"))
   {
     std::cerr << "Failed to load BottomRight texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("Barn", "Barn.png"))
+  if (!loadTextureAndCreateSprite("Barn", "Barn.png"))
   {
     std::cerr << "Failed to load Barn texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TruckLeft", "TruckLeft.png"))
+  if (!loadTextureAndCreateSprite("TruckLeft", "TruckLeft.png"))
   {
     std::cerr << "Failed to load TruckLeft texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TruckRight", "TruckRight.png"))
+  if (!loadTextureAndCreateSprite("TruckRight", "TruckRight.png"))
   {
     std::cerr << "Failed to load TruckRight texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TruckDown", "TruckDown.png"))
+  if (!loadTextureAndCreateSprite("TruckDown", "TruckDown.png"))
   {
     std::cerr << "Failed to load TruckDown texture" << std::endl;
   }
-  if(!loadTextureAndCreateSprite("TruckUp", "TruckUp.png"))
+  if (!loadTextureAndCreateSprite("TruckUp", "TruckUp.png"))
   {
     std::cerr << "Failed to load TruckUp texture" << std::endl;
   }
-
 }
 
-bool Game::loadTextureAndCreateSprite(const std::string& key, const std::string& filename) 
-{   
+bool Game::loadTextureAndCreateSprite(const std::string &key, const std::string &filename)
+{
   auto texturePtr = std::make_shared<sf::Texture>();
-  if (!texturePtr->loadFromFile(filename)) 
+  if (!texturePtr->loadFromFile(filename))
   {
     std::cerr << "Couldn't load texture: " << filename << std::endl;
     return false;
@@ -138,7 +136,7 @@ bool Game::loadTextureAndCreateSprite(const std::string& key, const std::string&
 
 void Game::displayWindow()
 {
-  sf::RenderWindow window(sf::VideoMode((width+4) * tileSize, (height+4) * tileSize), "Pixel Art Grid");
+  sf::RenderWindow window(sf::VideoMode((width + 4) * tileSize, (height + 4) * tileSize), "Pixel Art Grid");
   window.setFramerateLimit(60);
   while (window.isOpen())
   {
@@ -149,25 +147,25 @@ void Game::displayWindow()
       {
         window.close();
       }
-      if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) 
+      if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
       {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         int x = (mousePos.x / tileSize) - 2;
         int y = (mousePos.y / tileSize) - 2;
-        FarmUnit* unit = getUnit(x, y);
-        CropField* cropField = dynamic_cast<CropField*>(unit);
+        FarmUnit *unit = getUnit(x, y);
+        CropField *cropField = dynamic_cast<CropField *>(unit);
         std::string type = unit->getCropType();
-        int amount = unit->getTotalCapacity()-unit->getLeftoverCapacity();
-        BarnDecorator* barnDecorator = dynamic_cast<BarnDecorator*>(unit);
+        int amount = unit->getTotalCapacity() - unit->getLeftoverCapacity();
+        BarnDecorator *barnDecorator = dynamic_cast<BarnDecorator *>(unit);
         if (!cropField && currentIndex == farmIterator->getIndex(unit))
         {
-          CropField* newUnit = new CropField(type,100);
+          CropField *newUnit = new CropField(type, 100);
           newUnit->addCrops(amount);
-          setUnit(x , y , newUnit); 
+          setUnit(x, y, newUnit);
         }
-        else if(cropField && currentIndex == farmIterator->getIndex(unit))
+        else if (cropField && currentIndex == farmIterator->getIndex(unit))
         {
-          setUnit(x , y , new BarnDecorator(cropField));
+          setUnit(x, y, new BarnDecorator(cropField));
         }
       }
     }
@@ -178,16 +176,16 @@ void Game::displayWindow()
   }
 }
 
-void Game::displayFarm(sf::RenderWindow& window)
+void Game::displayFarm(sf::RenderWindow &window)
 {
   farmIterator->firstFarm();
   while (farmIterator->hasNext())
   {
-    FarmUnit* unit = farmIterator->currentFarm();
+    FarmUnit *unit = farmIterator->currentFarm();
     int x = farmIterator->getPath()[farmIterator->getCurrentIndex()].x;
     int y = farmIterator->getPath()[farmIterator->getCurrentIndex()].y;
 
-    if (BarnDecorator* barnDecorator = dynamic_cast<BarnDecorator*>(unit))
+    if (BarnDecorator *barnDecorator = dynamic_cast<BarnDecorator *>(unit))
     {
       std::string soilStateName = barnDecorator->getSoilStateName();
       if (auto it = spriteMap.find(soilStateName); it != spriteMap.end())
@@ -208,7 +206,7 @@ void Game::displayFarm(sf::RenderWindow& window)
         std::cerr << "Unknown soil state: " << soilStateName << std::endl;
       }
     }
-    else if (CropField* cropField = dynamic_cast<CropField*>(unit))
+    else if (CropField *cropField = dynamic_cast<CropField *>(unit))
     {
       std::string soilStateName = cropField->getSoilStateName();
       if (auto it = spriteMap.find(soilStateName); it != spriteMap.end())
@@ -230,66 +228,63 @@ void Game::displayFarm(sf::RenderWindow& window)
       highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
       window.draw(highlight);
     }
-  farmIterator->next();
+    farmIterator->next();
   }
 }
 
-void Game::drawSprite(sf::RenderWindow& window, const sf::Sprite& sprite, int x, int y)
+void Game::drawSprite(sf::RenderWindow &window, const sf::Sprite &sprite, int x, int y)
 {
-    sf::Sprite tempSprite = sprite;
-    tempSprite.setPosition((x + 2) * tileSize, (y + 2) * tileSize);
-    sf::Vector2u textureSize = tempSprite.getTexture()->getSize();
-    tempSprite.setScale(
-        static_cast<float>(tileSize) / textureSize.x,
-        static_cast<float>(tileSize) / textureSize.y
-    );
-    window.draw(tempSprite);
+  sf::Sprite tempSprite = sprite;
+  tempSprite.setPosition((x + 2) * tileSize, (y + 2) * tileSize);
+  sf::Vector2u textureSize = tempSprite.getTexture()->getSize();
+  tempSprite.setScale(
+      static_cast<float>(tileSize) / textureSize.x,
+      static_cast<float>(tileSize) / textureSize.y);
+  window.draw(tempSprite);
 }
 
-
-void Game::displayRoad(sf::RenderWindow& window)
+void Game::displayRoad(sf::RenderWindow &window)
 {
-  for(int x = 0 ; x < width+2 ; x++)
+  for (int x = 0; x < width + 2; x++)
   {
-    for(int y = 0 ; y < height+2 ; y++)
+    for (int y = 0; y < height + 2; y++)
     {
-      if(x == 0 || y == 0 || x == width+1 || y == height+1)
+      if (x == 0 || y == 0 || x == width + 1 || y == height + 1)
       {
         auto it = spriteMap.find("Dry");
-        if(x == 0 && y ==0)
+        if (x == 0 && y == 0)
         {
           it = spriteMap.find("TopLeft");
         }
-        else if(x == 0 && y == height+1)
+        else if (x == 0 && y == height + 1)
         {
           it = spriteMap.find("BottomLeft");
         }
-        else if(y == 0 && x == width+1)
+        else if (y == 0 && x == width + 1)
         {
           it = spriteMap.find("TopRight");
         }
-        else if(y == height+1 && x == width+1)
+        else if (y == height + 1 && x == width + 1)
         {
           it = spriteMap.find("BottomRight");
         }
-        else if((x == 0 || x == width+1) && y > 0 && y < height+1)
+        else if ((x == 0 || x == width + 1) && y > 0 && y < height + 1)
         {
           it = spriteMap.find("Vertical");
         }
-        else if((y == 0 || y == height+1) && x > 0 && x < width+1)
+        else if ((y == 0 || y == height + 1) && x > 0 && x < width + 1)
         {
           it = spriteMap.find("Horisontal");
         }
-        
+
         if (it != spriteMap.end())
         {
           sf::Sprite sprite = it->second;
-          sprite.setPosition((x+1) * tileSize, (y+1) * tileSize);
+          sprite.setPosition((x + 1) * tileSize, (y + 1) * tileSize);
           sf::Vector2u textureSize = sprite.getTexture()->getSize();
           sprite.setScale(
-              static_cast<float>(tileSize) / textureSize.x, 
-              static_cast<float>(tileSize) / textureSize.y
-          );
+              static_cast<float>(tileSize) / textureSize.x,
+              static_cast<float>(tileSize) / textureSize.y);
           window.draw(sprite);
         }
       }
@@ -298,35 +293,35 @@ void Game::displayRoad(sf::RenderWindow& window)
 }
 
 #endif
-void Game::setUnit(int x, int y, FarmUnit* unit)
+void Game::setUnit(int x, int y, FarmUnit *unit)
 {
-    farmIterator->insert(x , y , unit);
+  farmIterator->insert(x, y, unit);
 }
 
-FarmUnit* Game::getUnit(int x , int y)
+FarmUnit *Game::getUnit(int x, int y)
 {
-  return farmIterator->get(x , y);
+  return farmIterator->get(x, y);
 }
 
 void Game::setIterator(bool type)
 {
-  if(type)
+  if (type)
   {
-    this->farmIterator = new FarmTraversalBFS(farmMap,0,0);
+    this->farmIterator = new FarmTraversalBFS(farmMap, 0, 0);
     return;
   }
-  this->farmIterator = new FarmTraversalDFS(farmMap,0,0);
+  this->farmIterator = new FarmTraversalDFS(farmMap, 0, 0);
 }
 
 Game::~Game()
 {
-  if (runThread.joinable()) 
+  if (runThread.joinable())
   {
     runThread.join();
   }
-  for (auto& row : farmMap)
+  for (auto &row : farmMap)
   {
-    for (auto& unit : row)
+    for (auto &unit : row)
     {
       delete unit;
     }

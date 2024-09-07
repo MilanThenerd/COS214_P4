@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-CropField::CropField(std::string crop , int capacity)
+CropField::CropField(std::string crop, int capacity)
 {
   this->cropType = crop;
   this->totalCapacity = capacity;
@@ -15,7 +15,7 @@ int CropField::getTotalCapacity() const
   return totalCapacity;
 }
 
-int CropField::getLeftoverCapacity() const 
+int CropField::getLeftoverCapacity() const
 {
   return (totalCapacity - currentStored);
 }
@@ -38,7 +38,7 @@ void CropField::increaseProduction()
 void CropField::harvest()
 {
   int crops = soilState->harvestCrops();
-  if(fertilizer)
+  if (fertilizer)
   {
     crops *= 2;
     fertilizer = false;
@@ -49,7 +49,7 @@ void CropField::harvest()
 void CropField::addCrops(int amount)
 {
   currentStored += amount;
-  if(currentStored > getTotalCapacity())
+  if (currentStored > getTotalCapacity())
   {
     currentStored = totalCapacity;
   }
@@ -58,12 +58,12 @@ void CropField::addCrops(int amount)
 int CropField::removeCrops(int amount)
 {
   int total = 0;
-  if (amount > currentStored) 
+  if (amount > currentStored)
   {
     total = currentStored;
     currentStored = 0;
-  } 
-  else 
+  }
+  else
   {
     currentStored -= amount;
     total = amount;
@@ -71,20 +71,24 @@ int CropField::removeCrops(int amount)
   return total;
 }
 
+void CropField::setState(SoilState *newstate)
+{
+  if (soilState != nullptr)
+  {
+    delete soilState;
+  }
+  soilState = newstate;
+}
+
 void CropField::rain()
 {
   static bool seeded = false;
-  if (!seeded) 
+  if (!seeded)
   {
     srand(static_cast<unsigned int>(time(0)));
     seeded = true;
   }
-  SoilState* newState = soilState->rain();
-  if(newState != soilState)
-  {
-    delete soilState;
-    soilState = newState;
-  }
+  setState(soilState->rain());
 }
 
 CropField::~CropField()

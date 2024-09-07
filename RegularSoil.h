@@ -1,17 +1,13 @@
-#ifndef FLOODEDSOIL_H
-#define FLOODEDSOIL_H
+#ifndef REGULARSOIL_H
+#define REGULARSOIL_H
 
 #include "SoilState.h"
 #include "DrySoil.h"
 #include "FruitfulSoil.h"
 
-class FloodedSoil : public SoilState
+class RegularSoil : public SoilState
 {
-private:
-    int roundsLeft;
-
 public:
-    FloodedSoil() : roundsLeft(2) {}
     int harvestCrops() const override;
     SoilState *rain() override;
     std::string getName() const override;

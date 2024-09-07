@@ -5,18 +5,22 @@ int FloodedSoil::harvestCrops() const
   return 0;
 }
 
-SoilState* FloodedSoil::rain()
+SoilState *FloodedSoil::rain()
 {
-  int random = rand() % 3;
-  if (random == 0) 
+  roundsLeft--;
+  if (roundsLeft > 0)
   {
-    return new DrySoil();
-  } 
-  else if (random == 1) 
+    return new FloodedSoil();
+  }
+
+  int random = rand() % 2;
+  // No rain
+  if (random == 0)
   {
-      return new FruitfulSoil();
-  } 
-  else 
+    return new FruitfulSoil();
+  }
+  // Rain
+  else if (random == 1)
   {
     return new FloodedSoil();
   }
