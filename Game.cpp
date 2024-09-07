@@ -17,7 +17,7 @@ Game::Game(int width , int height) : width(width) , height(height)
   #ifdef USE_GUI
   loadTextures();
   #endif
-  this->farmIterator = new FarmTraversal(this->farmMap,0,0,true);
+  this->farmIterator = new FarmTraversalDFS(this->farmMap,0,0);
   for(int x = 0 ; x < width ; x++)
   {
     for(int y = 0 ; y < height ; y++)
@@ -38,7 +38,7 @@ void Game::run()
 {
   while (true) 
   {
-      currentIndex = (currentIndex + 1) % (int)farmIterator->length;
+      currentIndex = (currentIndex + 1) % (int)farmIterator->getLength();
       // rain();
       std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
@@ -184,8 +184,8 @@ void Game::displayFarm(sf::RenderWindow& window)
   while (farmIterator->hasNext())
   {
     FarmUnit* unit = farmIterator->currentFarm();
-    int x = farmIterator->path[farmIterator->currentIndex].x;
-    int y = farmIterator->path[farmIterator->currentIndex].y;
+    int x = farmIterator->getPath()[farmIterator->getCurrentIndex()].x;
+    int y = farmIterator->getPath()[farmIterator->getCurrentIndex()].y;
 
     if (BarnDecorator* barnDecorator = dynamic_cast<BarnDecorator*>(unit))
     {

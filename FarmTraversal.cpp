@@ -2,10 +2,9 @@
 
 #include<iostream>
 
-FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX, int startY, bool type)
-    : farmMap(farmMap), startX(startX), startY(startY), type(type), currentIndex(0)
+FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX, int startY)
+    : farmMap(farmMap), startX(startX), startY(startY), currentIndex(0)
 {
-  this->type = type;
   initialize();
 }
 
@@ -14,14 +13,6 @@ void FarmTraversal::initialize()
     visited.clear();
     path.clear();
     
-    if (type == true) 
-    {
-        bfsTraversal();
-    } 
-    else
-    {
-        dfsTraversal();
-    }
 }
 
 void FarmTraversal::insert(int x, int y, FarmUnit* unit) 
@@ -53,62 +44,6 @@ FarmUnit* FarmTraversal::get(int x , int y)
     return farmMap[x][y];
   }
   return nullptr;
-}
-
-void FarmTraversal::bfsTraversal() 
-{
-  if (!isWithinBounds(startX, startY)) return;
-    
-  bfsQueue.push({startX, startY});
-  visited.insert({startX, startY});
-    
-  while (!bfsQueue.empty()) 
-  {
-    Coords current = bfsQueue.front();
-    bfsQueue.pop();
-    path.push_back(current);
-
-    std::vector<Coords> neighbors = {{current.x+1, current.y}, {current.x-1, current.y}, {current.x, current.y+1}, {current.x, current.y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        bfsQueue.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
-}
-
-void FarmTraversal::dfsTraversal()
-{
-  if (!isWithinBounds(startX, startY)) 
-  {
-    return;
-  }
-  dfsStack.push({startX, startY});
-  visited.insert({startX, startY});
-
-  while (!dfsStack.empty()) 
-  {
-    Coords current = dfsStack.top();
-    dfsStack.pop();
-    path.push_back(current);
-
-    std::vector<Coords> neighbors = {{current.x+1, current.y}, {current.x-1, current.y}, {current.x, current.y+1}, {current.x, current.y-1}};
-    for (const Coords& neighbor : neighbors) 
-    {
-      int nx = neighbor.x;
-      int ny = neighbor.y;
-      if (isWithinBounds(nx, ny) && visited.find(neighbor) == visited.end()) 
-      {
-        dfsStack.push(neighbor);
-        visited.insert(neighbor);
-      }
-    }
-  }
 }
 
 bool FarmTraversal::isWithinBounds(int x, int y) const 
@@ -156,4 +91,19 @@ int FarmTraversal::getIndex(FarmUnit* unit) const
     }
   }
   return -1;
+}
+
+int FarmTraversal::getLength() const
+{
+  return length;
+}
+
+int FarmTraversal::getCurrentIndex() const
+{
+  return currentIndex;
+}
+
+std::vector<Coords> FarmTraversal::getPath() const
+{
+  return path;
 }

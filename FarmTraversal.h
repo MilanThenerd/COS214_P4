@@ -11,9 +11,9 @@
 class FarmTraversal
 {
   public:
-    FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY, bool type);
-    void initialize();
-
+    FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY);
+    virtual ~FarmTraversal() = default;
+    virtual void initialize() = 0;
     void insert(int x , int y , FarmUnit*);
     FarmUnit* firstFarm();
     FarmUnit* currentFarm();
@@ -22,24 +22,18 @@ class FarmTraversal
     bool isDone() const;
     bool hasNext() const;
     int getIndex(FarmUnit* unit) const;
+    int getLength() const;
+    int getCurrentIndex() const;
+    std::vector<Coords> getPath() const;
+  protected:
+    bool contains(int x , int y) const;
+    bool isWithinBounds(int x, int y) const;
+    std::vector<std::vector<FarmUnit*>>& farmMap;
+    int startX;
+    int startY;
+    std::unordered_set<Coords> visited;
     int length = 0;
     std::vector<Coords> path;
     size_t currentIndex;
-
-  private:
-    bool contains(int x , int y) const;
-    bool isWithinBounds(int x, int y) const;
-    void bfsTraversal();
-    void dfsTraversal();
-    
-    std::vector<std::vector<FarmUnit*>>& farmMap;
-    bool type;
-    int startX;
-    int startY;
-
-    std::unordered_set<Coords> visited;
-    std::queue<Coords> bfsQueue;
-    std::stack<Coords> dfsStack;
-
 };
 #endif

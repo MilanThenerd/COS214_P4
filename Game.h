@@ -3,9 +3,11 @@
 
 #include "FarmUnitDecorator.h"
 #include "BarnDecorator.h"
-#include "FarmTraversal.h"
+#include "FarmTraversalBFS.h"
+#include "FarmTraversalDFS.h"
 #include "CropField.h"
 #include "Coords.h"
+
 #include <thread>
 #include <vector>
 #include <queue>
@@ -25,7 +27,6 @@ class Game
     int width;
     int height;
     int tileSize = 64;
-    bool bfstraversal = true;
     int currentIndex;
     std::vector<std::vector<FarmUnit*>> farmMap;
     std::thread runThread;
@@ -46,7 +47,6 @@ class Game
     
   public:
     Game(int width , int height);
-    void setIteratorType(bool);
     void run();
     void displayWindow();
     ~Game();
