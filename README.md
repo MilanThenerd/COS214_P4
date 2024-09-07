@@ -16,13 +16,13 @@ To Do list:
       - [ ] If so, surrounding units should check if a Barn FarmUnit is within 2 blocks or so when calculating max capacity
 
 - [ ] Component 2 Simon
-  - [ ] We need to create a `SetState` function for the CropFields
+  - [X] We need to create a `SetState` function for the CropFields
     - [ ] This will need to notify all its subscribers of its state change
     - [ ] Look at Component 4 for more details
-  - [ ] Add RegularSoil to further differentiate between Dry and Fruitful (fertilized) soil.
-    - [ ] X2 crops?
-  - [ ] State transitions
-    - [ ] Dry → Regular → Fruitful → Flooded
+  - [X] Add RegularSoil to further differentiate between Dry and Fruitful (fertilized) soil.
+    - [X] X2 crops?
+  - [X] State transitions
+    - [X] Dry → Regular → Fruitful → Flooded
     - [ ] If a FarmUnit is fertilized, it is always fruitful but floods more easily.
     - [ ] Look at "Other" to see if we want to do weather-based transitions
 
