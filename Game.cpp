@@ -17,7 +17,7 @@ Game::Game(int width , int height) : width(width) , height(height)
   #ifdef USE_GUI
   loadTextures();
   #endif
-  this->farmIterator = new FarmTraversalDFS(this->farmMap,0,0);
+  setIterator(true);
   for(int x = 0 ; x < width ; x++)
   {
     for(int y = 0 ; y < height ; y++)
@@ -306,6 +306,16 @@ void Game::setUnit(int x, int y, FarmUnit* unit)
 FarmUnit* Game::getUnit(int x , int y)
 {
   return farmIterator->get(x , y);
+}
+
+void Game::setIterator(bool type)
+{
+  if(type)
+  {
+    this->farmIterator = new FarmTraversalBFS(farmMap,0,0);
+    return;
+  }
+  this->farmIterator = new FarmTraversalDFS(farmMap,0,0);
 }
 
 Game::~Game()
