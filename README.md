@@ -15,7 +15,7 @@ To Do list:
     - [ ] Maybe adds a modifier to crop capacity of surrounding farm units?
       - [ ] If so, surrounding units should check if a Barn FarmUnit is within 2 blocks or so when calculating max capacity
 
-- [ ] Component 2
+- [ ] Component 2 Simon
   - [ ] We need to create a `SetState` function for the CropFields
     - [ ] This will need to notify all its subscribers of its state change
     - [ ] Look at Component 4 for more details
