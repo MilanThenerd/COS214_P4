@@ -56,11 +56,11 @@ To Do list:
   - [ ] Iterator needs some work:
     - [ ] We need to have two separate iterators:
       - [ ] Breadth-first:
-        - [ ] Maybe this one starts at a certain Coord, adds all surrounding coords recursively to a list? That way it “grows” outwards.
+        - [X] Maybe this one starts at a certain Coord, adds all surrounding coords recursively to a list? That way it “grows” outwards.
         - [ ] Can be used along with a distance function to check if a Barn is in range of a specific farm unit (unnecessary but it’s something) as well as simulating rain?
-          - [ ] Rain starts at one corner and moves over entire farm from there.
+          - [X] Rain starts at one corner and moves over entire farm from there.
       - [ ] Depth-first:
-        - [ ] “Snakes” row by row / column by column.
+        - [X] “Snakes” row by row / column by column.
         - [ ] Could be used to loop through farm units to see if they need to call a delivery truck.
 
 - [ ] Other
