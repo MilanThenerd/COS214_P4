@@ -158,6 +158,14 @@ void Game::loadTextures()
   {
     std::cerr << "Failed to load Fertilizer texture" << std::endl;
   }
+  if (!loadTextureAndCreateSprite("BigBarn", "BigBarn.png"))
+  {
+    std::cerr << "Failed to load BigBarn texture" << std::endl;
+  }
+  if (!loadTextureAndCreateSprite("BigBarnButton", "BigBarnButton.png"))
+  {
+    std::cerr << "Failed to load BigBarnButton texture" << std::endl;
+  }
 }
 
 bool Game::loadTextureAndCreateSprite(const std::string &key, const std::string &filename)
@@ -247,11 +255,28 @@ void Game::handleEvents(sf::RenderWindow &window)
           dragOffset = mousePosF - fertilizerButtonPosition;
         }
       }
+
+      // Check if the bigbarn button is clicked
+      if (spriteMap.find("BigBarnButton") != spriteMap.end())
+      {
+        sf::Sprite sprite = spriteMap["BigBarnButton"];
+        sprite.setPosition(bigBarnButtonPosition);
+        sf::Vector2u textureSize = sprite.getTexture()->getSize();
+        sprite.setScale(
+            static_cast<float>(tileSize) / textureSize.x / 2,
+            static_cast<float>(tileSize) / textureSize.y / 2);
+        if (sprite.getGlobalBounds().contains(mousePosF))
+        {
+          isDraggingBigBarnButton = true;
+          dragOffset = mousePosF - bigBarnButtonPosition;
+        }
+      }
     }
     else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
     {
       isDraggingBarnButton = false;
       isDraggingFertilizerButton = false;
+      isDraggingBigBarnButton = false;
 
       // Check if the barn button is over a farm unit
       sf::Vector2f barnDropPosition = barnButtonPosition - sf::Vector2f(tileSize * 2, tileSize * 2);
@@ -289,9 +314,24 @@ void Game::handleEvents(sf::RenderWindow &window)
         }
       }
 
+      // Check if the big barn button is over a farm unit
+      sf::Vector2f bbDropPosition = bigBarnButtonPosition - sf::Vector2f(tileSize * 2, tileSize * 2);
+      if (isOverFarmUnit(bbDropPosition))
+      {
+        sf::Vector2i farmUnitCoords = getFarmUnitCoords(bbDropPosition);
+        FarmUnit *unit = getUnit(farmUnitCoords.x, farmUnitCoords.y);
+        if (!hasDecorator(unit, typeid(ExtraBarnDecorator)))
+        {
+          delete unit;
+          farmMap[farmUnitCoords.x][farmUnitCoords.y] = new Barn("Crop", 100);
+          std::cout << "Big Barn button dropped over farm unit at: (" << farmUnitCoords.x << ", " << farmUnitCoords.y << ")" << std::endl;
+        }
+      }
+
       // Snap buttons back to their original positions
       barnButtonPosition = originalBarnButtonPosition;
       fertilizerButtonPosition = originalFertilizerButtonPosition;
+      bigBarnButtonPosition = originalBigBarnButtonPosition;
     }
     else if (event.type == sf::Event::MouseMoved)
     {
@@ -304,6 +344,11 @@ void Game::handleEvents(sf::RenderWindow &window)
       {
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         fertilizerButtonPosition = sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) - dragOffset;
+      }
+      else if (isDraggingBigBarnButton)
+      {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        bigBarnButtonPosition = sf::Vector2f(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y)) - dragOffset;
       }
     }
   }
@@ -336,6 +381,7 @@ void Game::displayFarm(sf::RenderWindow &window)
     ExtraBarnDecorator *barnDecorator = nullptr;
     FertilizerDecorator *fertilizerDecorator = nullptr;
     CropField *cropField = nullptr;
+    Barn *barn = nullptr;
 
     while (unit)
     {
@@ -352,6 +398,11 @@ void Game::displayFarm(sf::RenderWindow &window)
       else if (auto cf = dynamic_cast<CropField *>(unit))
       {
         cropField = cf;
+        break;
+      }
+      else if (auto cf = dynamic_cast<Barn *>(unit))
+      {
+        barn = cf;
         break;
       }
       else
@@ -397,6 +448,18 @@ void Game::displayFarm(sf::RenderWindow &window)
       else
       {
         std::cerr << "Barn sprite not found in spriteMap." << std::endl;
+      }
+    }
+
+    if (barn)
+    {
+      if (auto it = spriteMap.find("BigBarn"); it != spriteMap.end())
+      {
+        drawSprite(window, it->second, x, y);
+      }
+      else
+      {
+        std::cerr << "BigBarn sprite not found in spriteMap." << std::endl;
       }
     }
 
@@ -529,6 +592,18 @@ void Game::displayUI(sf::RenderWindow &window)
           static_cast<float>(tileSize) / textureSize.y / 2);
       window.draw(sprite);
     }
+
+    // Draw BigBarn button
+    if (auto it = spriteMap.find("BigBarnButton"); it != spriteMap.end())
+    {
+      sf::Sprite sprite = it->second;
+      sprite.setPosition(bigBarnButtonPosition);
+      sf::Vector2u textureSize = sprite.getTexture()->getSize();
+      sprite.setScale(
+          static_cast<float>(tileSize) / textureSize.x / 2,
+          static_cast<float>(tileSize) / textureSize.y / 2);
+      window.draw(sprite);
+    }
   }
 }
 
@@ -548,8 +623,10 @@ void Game::initUi(sf::RenderWindow &window)
 {
   barnButtonPosition = sf::Vector2f(0, window.getSize().y - tileSize / 2);
   fertilizerButtonPosition = sf::Vector2f(tileSize / 2, window.getSize().y - tileSize / 2);
+  bigBarnButtonPosition = sf::Vector2f(tileSize, window.getSize().y - tileSize / 2);
   originalBarnButtonPosition = barnButtonPosition;
   originalFertilizerButtonPosition = fertilizerButtonPosition;
+  originalBigBarnButtonPosition = bigBarnButtonPosition;
 }
 
 void Game::handleMouse(sf::Event event)

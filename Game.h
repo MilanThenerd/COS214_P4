@@ -51,10 +51,13 @@ private:
   std::map<std::string, sf::Sprite> spriteMap;
   bool isDraggingBarnButton = false;
   bool isDraggingFertilizerButton = false;
+  bool isDraggingBigBarnButton = false;
   sf::Vector2f barnButtonPosition;
   sf::Vector2f fertilizerButtonPosition;
+  sf::Vector2f bigBarnButtonPosition;
   sf::Vector2f originalBarnButtonPosition;
   sf::Vector2f originalFertilizerButtonPosition;
+  sf::Vector2f originalBigBarnButtonPosition;
   sf::Vector2f dragOffset;
   sf::Font font;
 
