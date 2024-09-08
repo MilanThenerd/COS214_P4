@@ -10,30 +10,29 @@
 
 class FarmTraversal
 {
-  public:
-    FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY);
-    virtual ~FarmTraversal() = default;
-    virtual void initialize() = 0;
-    void insert(int x , int y , FarmUnit*);
-    FarmUnit* firstFarm();
-    FarmUnit* currentFarm();
-    FarmUnit* next();
-    FarmUnit* get(int x , int y);
-    bool isDone() const;
-    bool hasNext() const;
-    int getIndex(FarmUnit* unit) const;
-    int getLength() const;
-    int getCurrentIndex() const;
-    std::vector<Coords> getPath() const;
-  protected:
-    bool contains(int x , int y) const;
-    bool isWithinBounds(int x, int y) const;
-    std::vector<std::vector<FarmUnit*>>& farmMap;
-    int startX;
-    int startY;
-    std::unordered_set<Coords> visited;
-    int length = 0;
-    std::vector<Coords> path;
-    size_t currentIndex;
+public:
+  FarmTraversal(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY);
+  virtual ~FarmTraversal() = default;
+  virtual void initialize() = 0;
+  FarmUnit *firstFarm();
+  FarmUnit *currentFarm();
+  FarmUnit *next();
+  FarmUnit *get(int x, int y);
+  bool isDone() const;
+  bool hasNext() const;
+  int getIndex(FarmUnit *unit) const;
+  int getLength() const;
+  int getCurrentIndex() const;
+  std::vector<Coords> getPath() const;
+
+protected:
+  bool contains(int x, int y) const;
+  bool isWithinBounds(int x, int y) const;
+  std::vector<std::vector<FarmUnit *>> &farmMap;
+  int startX;
+  int startY;
+  std::unordered_set<Coords> visited;
+  std::vector<Coords> path;
+  std::size_t currentIndex;
 };
 #endif

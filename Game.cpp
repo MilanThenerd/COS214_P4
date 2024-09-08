@@ -30,12 +30,14 @@ Game::Game(int width, int height) : width(width), height(height)
   this->runThread = std::thread(&Game::run, this);
   this->displayWindow();
 #else
-  // this->run();
+  this->run();
 #endif
 }
 
 void Game::run()
 {
+  std::cout << "Farm size" << (int)farmIterator->getLength() << std::endl;
+
   while (true)
   {
     currentIndex = (currentIndex + 1) % (int)farmIterator->getLength();
@@ -317,7 +319,15 @@ void Game::displayRoad(sf::RenderWindow &window)
 #endif
 void Game::setUnit(int x, int y, FarmUnit *unit)
 {
-  farmIterator->insert(x, y, unit);
+  if (x < 0 || y < 0 || x >= width || y >= height)
+  {
+    return;
+  }
+
+  if (farmMap[x][y] == nullptr)
+  {
+    farmMap[x][y] = unit;
+  }
 }
 
 FarmUnit *Game::getUnit(int x, int y)

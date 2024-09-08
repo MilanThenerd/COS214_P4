@@ -1,43 +1,29 @@
 #include "FarmTraversal.h"
 
-#include<iostream>
+#include <iostream>
 
-FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX, int startY)
+FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY)
     : farmMap(farmMap), startX(startX), startY(startY), currentIndex(0)
 {
   initialize();
 }
 
-void FarmTraversal::initialize() 
+void FarmTraversal::initialize()
 {
-    visited.clear();
-    path.clear();
-    
+  visited.clear();
+  path.clear();
 }
 
-void FarmTraversal::insert(int x, int y, FarmUnit* unit) 
+bool FarmTraversal::contains(int x, int y) const
 {
-    if (isWithinBounds(x, y))
-    {
-      if(!contains(x,y))
-      {
-        length++;
-      }
-      farmMap[x][y] = unit;; 
-    } 
-    this->initialize();
-}
-
-bool FarmTraversal::contains(int x , int y) const
-{
-  if(farmMap[x][y] != nullptr)
+  if (farmMap[x][y] != nullptr)
   {
     return true;
   }
   return false;
 }
 
-FarmUnit* FarmTraversal::get(int x , int y)
+FarmUnit *FarmTraversal::get(int x, int y)
 {
   if (isWithinBounds(x, y))
   {
@@ -46,42 +32,43 @@ FarmUnit* FarmTraversal::get(int x , int y)
   return nullptr;
 }
 
-bool FarmTraversal::isWithinBounds(int x, int y) const 
+bool FarmTraversal::isWithinBounds(int x, int y) const
 {
   return x >= 0 && x < farmMap.size() && y >= 0 && y < farmMap[0].size();
 }
 
-FarmUnit* FarmTraversal::firstFarm() 
+FarmUnit *FarmTraversal::firstFarm()
 {
   currentIndex = 0;
   return isDone() ? nullptr : farmMap[path[currentIndex].x][path[currentIndex].y];
 }
 
-FarmUnit* FarmTraversal::currentFarm() 
+FarmUnit *FarmTraversal::currentFarm()
 {
   return isDone() ? nullptr : farmMap[path[currentIndex].x][path[currentIndex].y];
 }
 
-FarmUnit* FarmTraversal::next() 
+FarmUnit *FarmTraversal::next()
 {
-  if (isDone()) return nullptr;
+  if (isDone())
+    return nullptr;
   currentIndex++;
   return isDone() ? nullptr : farmMap[path[currentIndex].x][path[currentIndex].y];
 }
 
-bool FarmTraversal::isDone() const 
+bool FarmTraversal::isDone() const
 {
-    return currentIndex >= path.size();
+  return currentIndex >= path.size();
 }
 
-bool FarmTraversal::hasNext() const 
+bool FarmTraversal::hasNext() const
 {
-    return currentIndex < path.size();
+  return currentIndex < path.size();
 }
 
-int FarmTraversal::getIndex(FarmUnit* unit) const
+int FarmTraversal::getIndex(FarmUnit *unit) const
 {
-  for (size_t i = 0; i < path.size(); ++i)
+  for (std::size_t i = 0; i < path.size(); ++i)
   {
     int x = path[i].x;
     int y = path[i].y;
@@ -95,7 +82,7 @@ int FarmTraversal::getIndex(FarmUnit* unit) const
 
 int FarmTraversal::getLength() const
 {
-  return length;
+  return farmMap.size() * farmMap[0].size();
 }
 
 int FarmTraversal::getCurrentIndex() const

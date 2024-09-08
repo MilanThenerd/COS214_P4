@@ -6,7 +6,7 @@
 class FarmTraversalBFS : public FarmTraversal
 {
   public:
-    FarmTraversalBFS(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY) : FarmTraversal(farmMap,startX,startY) { initialize();};
+    FarmTraversalBFS(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY);
   private:
     std::queue<Coords> bfsQueue;
     void initialize();
