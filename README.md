@@ -54,6 +54,7 @@ To Do list:
 
 - [ ] Component 5
   - [ ] Iterator needs some work:
+    - [ ] Iterator may not modify collection, move insert function
     - [ ] We need to have two separate iterators:
       - [ ] Breadth-first:
         - [X] Maybe this one starts at a certain Coord, adds all surrounding coords recursively to a list? That way it “grows” outwards.
