@@ -4,13 +4,13 @@
 #include "FarmUnitDecorator.h"
 #include "Barn.h"
 
-class BarnDecorator : public FarmUnitDecorator
+class ExtraBarnDecorator : public FarmUnitDecorator
 {
 private:
   Barn *barn;
 
 public:
-  BarnDecorator(FarmUnit *unit);
+  ExtraBarnDecorator(FarmUnit *unit);
   int getTotalCapacity() const override;
   std::string getCropType() const override;
   std::string getSoilStateName() const;
@@ -21,6 +21,7 @@ public:
   void addCrops(int cropAmount) override;
   int removeCrops(int cropAmount) override;
   void rain();
-  ~BarnDecorator();
+  FarmUnit *getWrappedUnit() { return decoratedUnit; }
+  ~ExtraBarnDecorator();
 };
 #endif

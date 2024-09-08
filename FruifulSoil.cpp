@@ -16,7 +16,7 @@ SoilState *FruitfulSoil::rain()
   // Rain
   else if (random == 1)
   {
-    int random2 = rand() % 3;
+    int random2 = rand() % 5;
     if (random2 == 0)
     {
       return new FloodedSoil();

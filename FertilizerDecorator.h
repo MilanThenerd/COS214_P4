@@ -22,6 +22,7 @@ public:
     void addCrops(int cropAmount) override;
     int removeCrops(int cropAmount) override;
     void rain();
+    FarmUnit *getWrappedUnit() { return decoratedUnit; }
     ~FertilizerDecorator();
 };
 #endif
