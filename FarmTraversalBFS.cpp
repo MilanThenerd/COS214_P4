@@ -1,6 +1,6 @@
 #include "FarmTraversalBFS.h"
 
-FarmTraversalBFS::FarmTraversalBFS(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY) : FarmTraversal(farmMap, startX, startY) { initialize(); }
+FarmTraversalBFS::FarmTraversalBFS(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY) : FarmTraversal(farmMap, startX, startY) {}
 
 void FarmTraversalBFS::initialize()
 {

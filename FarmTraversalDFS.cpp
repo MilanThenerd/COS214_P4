@@ -1,5 +1,7 @@
 #include "FarmTraversalDFS.h"
 
+FarmTraversalDFS::FarmTraversalDFS(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY) : FarmTraversal(farmMap, startX, startY) {}
+
 void FarmTraversalDFS::initialize()
 {
   if (!isWithinBounds(startX, startY))

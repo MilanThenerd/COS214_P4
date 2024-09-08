@@ -17,8 +17,10 @@ Game::Game(int width, int height) : width(width), height(height)
 #ifdef USE_GUI
   loadTextures();
 #endif
-  setIterator(false);
+  farmIterator = new FarmTraversalDFS(farmMap, 0, 0);
+  farmIterator->initialize();
   weatherIterator = new FarmTraversalBFS(farmMap, 0, 0);
+  weatherIterator->initialize();
   for (int x = 0; x < width; x++)
   {
     for (int y = 0; y < height; y++)
@@ -130,7 +132,7 @@ void Game::loadTextures()
 bool Game::loadTextureAndCreateSprite(const std::string &key, const std::string &filename)
 {
   auto texturePtr = std::make_shared<sf::Texture>();
-  if (!texturePtr->loadFromFile(filename))
+  if (!texturePtr->loadFromFile("Art/" + filename))
   {
     std::cerr << "Couldn't load texture: " << filename << std::endl;
     return false;
@@ -333,16 +335,6 @@ void Game::setUnit(int x, int y, FarmUnit *unit)
 FarmUnit *Game::getUnit(int x, int y)
 {
   return farmIterator->get(x, y);
-}
-
-void Game::setIterator(bool type)
-{
-  if (type)
-  {
-    this->farmIterator = new FarmTraversalBFS(farmMap, 0, 0);
-    return;
-  }
-  this->farmIterator = new FarmTraversalDFS(farmMap, 0, 0);
 }
 
 Game::~Game()

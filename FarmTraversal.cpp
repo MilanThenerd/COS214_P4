@@ -5,7 +5,6 @@
 FarmTraversal::FarmTraversal(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY)
     : farmMap(farmMap), startX(startX), startY(startY), currentIndex(0)
 {
-  initialize();
 }
 
 void FarmTraversal::initialize()
