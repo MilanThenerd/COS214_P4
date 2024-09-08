@@ -54,13 +54,13 @@ To Do list:
 
 - [ ] Component 5
   - [ ] Iterator needs some work:
-    - [ ] Iterator may not modify collection, move insert function
-    - [ ] We need to have two separate iterators:
-      - [ ] Breadth-first:
+    - [X] Iterator may not modify collection, move insert function
+    - [X] We need to have two separate iterators:
+      - [X] Breadth-first:
         - [X] Maybe this one starts at a certain Coord, adds all surrounding coords recursively to a list? That way it “grows” outwards.
         - [ ] Can be used along with a distance function to check if a Barn is in range of a specific farm unit (unnecessary but it’s something) as well as simulating rain?
           - [X] Rain starts at one corner and moves over entire farm from there.
-      - [ ] Depth-first:
+      - [X] Depth-first:
         - [X] “Snakes” row by row / column by column.
         - [ ] Could be used to loop through farm units to see if they need to call a delivery truck.
 
