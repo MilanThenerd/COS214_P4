@@ -400,7 +400,7 @@ void Game::displayFarm(sf::RenderWindow &window)
       }
     }
 
-    if (currentIndex == farmIterator->getIndex(unit))
+    if (currentIndex == farmIterator->getIndex(farmIterator->currentFarm()))
     {
       sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
       highlight.setPosition((x + 2) * tileSize + 5, (y + 2) * tileSize + 5);
