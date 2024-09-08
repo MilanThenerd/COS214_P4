@@ -4,7 +4,7 @@ run "sudo apt-get install libsfml-dev" to be able use the program
 
 To Do list:
 - [ ] Component 1
-  - [ ] FarmUnit should not contain crop type, only CropField
+  - [X] ~~FarmUnit should not contain crop type, only CropField~~
   - [ ] We are not using the composite pattern correctly:
     - [ ] We need to have a "bigger" FarmUnit that holds multiple smaller farm units
       - [ ] Maybe create FarmPlot, allowing the player to have multiple “plots”/farms consisting of multiple CropFields
