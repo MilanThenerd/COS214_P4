@@ -40,17 +40,17 @@ To Do list:
     - [ ] Fertilizer truck
       - [ ] Gets notified by FertilizerDecorator when fertilizer needs to be replenished.
       - [ ] Adds fertilizer to FertilizerDecorator.
-    - [ ] DeliveryTruck
-      - [ ] Gets notified by FarmUnit when storage is nearly full (like 9/10), sells crop and gives money.
-      - [ ] Removes crop from fields.
-  - [ ] Factory Method pattern for trucks:
-    - [ ] We need to "buy" and "sell" trucks.
-      - [ ] We can use this to "call" and "send" trucks.
-        - [ ] "Buy" fertilizer truck (pay for fertilizer) and "sell" once it has replenished fertilizer.
-        - [ ] "Buy" delivery truck (call for pickup) and "sell" to receive money for crops.
-    - [ ] `buyTruck()` creates truck object and deducts money if necessary.
-    - [ ] `callTruck()` calls `startEngine()` and moves the truck to designated farm unit from offscreen, etc.
-    - [ ] `sellTruck()` moves truck offscreen and gets rid of it.
+    - [X] DeliveryTruck
+      - [X] Gets notified by FarmUnit when storage is nearly full (like 9/10), sells crop and gives money.
+      - [X] Removes crop from fields.
+  - [X] Factory Method pattern for trucks:
+    - [X] We need to "buy" and "sell" trucks.
+      - [X] We can use this to "call" and "send" trucks.
+        - [X] "Buy" fertilizer truck (pay for fertilizer) and "sell" once it has replenished fertilizer.
+        - [X] "Buy" delivery truck (call for pickup) and "sell" to receive money for crops.
+    - [X] `buyTruck()` creates truck object and deducts money if necessary.
+    - [X] `callTruck()` calls `startEngine()` and moves the truck to designated farm unit from offscreen, etc.
+    - [X] `sellTruck()` moves truck offscreen and gets rid of it.
 
 - [ ] Component 5
   - [ ] Iterator needs some work:
