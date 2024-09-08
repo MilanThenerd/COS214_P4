@@ -16,7 +16,7 @@
 #include <memory>
 #include <map>
 #include <cmath>
-
+#define USE_GUI = 1
 #ifdef USE_GUI
 #include <SFML/Graphics.hpp>
 #endif
@@ -27,7 +27,7 @@ private:
   int width;
   int height;
   int tileSize = 64;
-  int currentIndex;
+  int currentIndex = 0;
   std::vector<std::vector<FarmUnit *>> farmMap;
   std::thread runThread;
   FarmTraversal *farmIterator;

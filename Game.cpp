@@ -39,27 +39,27 @@ Game::Game(int width, int height) : width(width), height(height)
 void Game::run()
 {
   std::cout << "Farm size" << (int)farmIterator->getLength() << std::endl;
-
+  weatherIterator->firstFarm();
   while (true)
   {
     currentIndex = (currentIndex + 1) % (int)farmIterator->getLength();
-    // rain();
+    rain();
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
 }
 
 void Game::rain()
 {
-  farmIterator->firstFarm();
-  while (farmIterator->hasNext())
+  FarmUnit *unit = weatherIterator->currentFarm();
+  CropField *cropField = dynamic_cast<CropField *>(unit);
+  if (cropField)
   {
-    FarmUnit *unit = farmIterator->currentFarm();
-    CropField *cropField = dynamic_cast<CropField *>(unit);
-    if (cropField)
-    {
-      cropField->rain();
-    }
-    farmIterator->next();
+    cropField->rain();
+  }
+  weatherIterator->next();
+  if (weatherIterator->isDone())
+  {
+    weatherIterator->firstFarm();
   }
 }
 
@@ -127,6 +127,10 @@ void Game::loadTextures()
   {
     std::cerr << "Failed to load Cloud texture" << std::endl;
   }
+  if (!loadTextureAndCreateSprite("Regular", "Regular.png"))
+  {
+    std::cerr << "Failed to load Regular texture" << std::endl;
+  }
 }
 
 bool Game::loadTextureAndCreateSprite(const std::string &key, const std::string &filename)
@@ -188,7 +192,6 @@ void Game::displayWindow()
 void Game::displayFarm(sf::RenderWindow &window)
 {
   farmIterator->firstFarm();
-  weatherIterator->firstFarm();
   while (farmIterator->hasNext())
   {
     FarmUnit *unit = farmIterator->currentFarm();
@@ -240,21 +243,12 @@ void Game::displayFarm(sf::RenderWindow &window)
     }
     if (currentIndex == weatherIterator->getIndex(unit))
     {
-      // sf::RectangleShape highlight(sf::Vector2f(tileSize, tileSize));
-      // highlight.setPosition((x + 2) * tileSize + 5, (y + 2) * tileSize + 5);
-      // highlight.setFillColor(sf::Color::Transparent);
-      // highlight.setOutlineThickness(5);
-      // highlight.setOutlineColor(sf::Color::Yellow);
-      // highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
-      // window.draw(highlight);
-
-      if (auto barnIt = spriteMap.find("Cloud"); barnIt != spriteMap.end())
+      if (auto it = spriteMap.find("Cloud"); it != spriteMap.end())
       {
-        drawSprite(window, barnIt->second, x, y);
+        drawSprite(window, it->second, x, y);
       }
     }
     farmIterator->next();
-    weatherIterator->next();
   }
 }
 
