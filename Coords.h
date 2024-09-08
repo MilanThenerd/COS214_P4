@@ -6,7 +6,6 @@
 #include <stack>
 #include <unordered_set>
 
-// Coords structure to represent grid coordinates
 struct Coords {
     int x;
     int y;

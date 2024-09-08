@@ -1,15 +1,16 @@
-#ifndef FERTILIZERDECORATOR_H
+#ifndef EXTRABARNDECORATOR_H
 #define EXTRABARNDECORATOR_H
 
 #include "FarmUnitDecorator.h"
-#include "ExtraBarnDecorator.h"
+#include "CropField.h"
+#include "Barn.h"
 
-class FertilizerDecorator : public FarmUnitDecorator
+class ExtraBarnDecorator : public FarmUnitDecorator
 {
   private:
-    int fertlizer = 0;
+    Barn* barn;
   public:
-    FertilizerDecorator(FarmUnit* unit);
+    ExtraBarnDecorator(FarmUnit* unit);
     int getTotalCapacity() const override;
     std::string getCropType() const override;
     std::string getSoilStateName() const;
@@ -20,6 +21,6 @@ class FertilizerDecorator : public FarmUnitDecorator
     void addCrops(int cropAmount) override;
     int removeCrops(int cropAmount) override;
     void rain();
-    ~FertilizerDecorator();
+    ~ExtraBarnDecorator();
 };
 #endif

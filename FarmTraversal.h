@@ -12,7 +12,6 @@ class FarmTraversal
 {
   public:
     FarmTraversal(std::vector<std::vector<FarmUnit*>>& farmMap, int startX , int startY);
-    virtual ~FarmTraversal() = default;
     virtual void initialize() = 0;
     void insert(int x , int y , FarmUnit*);
     FarmUnit* firstFarm();
@@ -25,6 +24,8 @@ class FarmTraversal
     int getLength() const;
     int getCurrentIndex() const;
     std::vector<Coords> getPath() const;
+    std::vector<std::vector<FarmUnit*>> getMap();
+    FarmUnit* getFarmUnitByIndex(int index);
   protected:
     bool contains(int x , int y) const;
     bool isWithinBounds(int x, int y) const;

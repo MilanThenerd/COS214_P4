@@ -5,15 +5,11 @@
 #include "DrySoil.h"
 #include "FruitfulSoil.h"
 
-class FloodedSoil : public SoilState
+class FloodedSoil : public SoilState 
 {
-private:
-    int roundsLeft;
-
 public:
-    FloodedSoil() : roundsLeft(2) {}
     int harvestCrops() const override;
-    SoilState *rain() override;
+    SoilState* rain() override;
     std::string getName() const override;
 };
 #endif

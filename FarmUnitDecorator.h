@@ -2,7 +2,6 @@
 #define FARMUNITDECORATOR_H
 
 #include "FarmUnit.h"
-#include "CropField.h"
 
 class FarmUnitDecorator : public FarmUnit
 {
