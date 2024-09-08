@@ -43,7 +43,7 @@ private:
   std::thread runThread;
   FarmTraversal *farmIterator;
   FarmTraversal *weatherIterator;
-  bool isPaused = true;
+  bool isPaused = false;
   int gold = 0;
 
 #ifdef USE_GUI
