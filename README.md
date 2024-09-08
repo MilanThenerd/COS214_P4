@@ -66,15 +66,15 @@ To Do list:
 
 - [ ] Other
   - [ ] Weather:
-    - [ ] Simulate random rain.
-    - [ ] As specified in Component 5, we pick a random point/corner and move outwards from there (draw cloud so we know that there is weather).
-    - [ ] Roll a dice to see if a tile receives rain (50% chance?); if it does, it moves up one state as specified in Component 2. If a fruitful cropfield receives rain, it has a 20% chance to flood for 2 days.
+    - [X] Simulate random rain.
+    - [X] As specified in Component 5, we pick a random point/corner and move outwards from there (draw cloud so we know that there is weather).
+    - [X] Roll a dice to see if a tile receives rain (50% chance?); if it does, it moves up one state as specified in Component 2. If a fruitful cropfield receives rain, it has a 20% chance to flood for 2 days.
       - [ ] Implement FloodedDecorator
         - [ ] Counts the number of days a FarmUnit has left to be flooded. After the period, the FarmUnit returns to a normal FarmUnit.
   - [ ] Turn-based system:
-    - [ ] We simulate “days.”
-    - [ ] A day has passed when all FarmUnits have received their weather.
-  - [ ] Buying of new FarmUnits
+    - [X] We simulate “days.”
+    - [X] A day has passed when all FarmUnits have received their weather.
+  - [ ] ~~Buying of new FarmUnits~~
 
 
 Idea
