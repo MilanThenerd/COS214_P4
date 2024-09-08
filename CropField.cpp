@@ -88,14 +88,13 @@ void CropField::rain()
   }
 }
 
-void CropField::notifyFertilizer()
-{
-  this->publisher->add(this,"Fertilizer");
-}
-
 void CropField::notifyDelivery()
 {
-  this->publisher->add(this,"Delivery");
+  double percentage = (double)this->currentStored/(double)this->totalCapacity;
+  if(percentage >= 0.75)
+  {
+    this->publisher->add(this,"Delivery");
+  }
 }
 
 CropField::~CropField()

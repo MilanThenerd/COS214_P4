@@ -15,7 +15,7 @@ void FarmTraversalDFS::initialize()
     dfsStack.pop();
     path.push_back(current);
 
-    std::vector<Coords> neighbors = {{current.x+1, current.y}, {current.x-1, current.y}, {current.x, current.y+1}, {current.x, current.y-1}};
+    std::vector<Coords> neighbors = {{current.x, current.y+1}, {current.x, current.y-1}, {current.x+1, current.y}, {current.x-1, current.y}};
     for (const Coords& neighbor : neighbors) 
     {
       int nx = neighbor.x;

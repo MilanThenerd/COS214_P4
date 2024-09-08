@@ -2,8 +2,9 @@
 
 #include <cmath>
 #include <algorithm>
-
 #include <unordered_map>
+#include <queue>
+#include <map>
 #include <iostream>
 
 Truck::Truck(std::vector<std::vector<FarmUnit*>>& map , int capacity) : farmMap(map) , capacity(capacity)
@@ -23,12 +24,12 @@ Truck::Truck(std::vector<std::vector<FarmUnit*>>& map , int capacity) : farmMap(
 
 bool Truck::callTruck(FarmUnit* unit)
 {
-  if((int)farmVector.size() == capacity)
+  if((int)farmVector.size() < capacity)
   {
-    return false;
+    this->farmVector.push_back(unit);
+    return true;
   }
-  this->farmVector.push_back(unit);
-  return true;
+  return false;
 }
 
 std::vector<Coords> Truck::getPath() const
@@ -38,12 +39,17 @@ std::vector<Coords> Truck::getPath() const
 
 void Truck::findShortestPath()
 {
-   this->path = findShortestPathRec();
-}
-
-double Truck::computeDistance(const Coords& a, const Coords& b) 
-{
-    return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
+  for(FarmUnit* unit : this->farmVector)
+  {
+    Coords c = this->getCoords(unit);
+  }
+  std::vector<Coords> path;
+  for (const auto& unit : farmVector) 
+  {
+    Coords coords = getCoords(unit);
+    path.push_back(coords);
+  }
+  this->path = path;
 }
 
 Coords Truck::getCoords(FarmUnit* unit)
@@ -62,53 +68,6 @@ Coords Truck::getCoords(FarmUnit* unit)
   return coord;
 }
 
-std::vector<Coords> Truck::findShortestPathRec() 
-{
-  std::vector<Coords> path;
-  if (farmVector.empty()) 
-  {
-    return path;
-  }
-  
-  int x = getCoords(farmVector.front()).x;
-  int y = getCoords(farmVector.front()).y;
-  Coords start(x,y);
-
-  path.push_back(start);
-  std::vector<Coords> unvisited;
-  for (const auto& unit : farmVector) 
-  {
-    x = getCoords(unit).x;
-    y = getCoords(unit).y;
-    Coords coords(x,y);
-    unvisited.push_back(coords);
-  }
-  unvisited.erase(std::remove(unvisited.begin(), unvisited.end(), start), unvisited.end());
-  while (!unvisited.empty()) 
-  {
-    Coords current = path.back();
-    double minDistance = std::numeric_limits<double>::max();
-    Coords nextPoint(-1,-1);
-    auto nearestIt = unvisited.end();
-    for (auto it = unvisited.begin(); it != unvisited.end(); ++it) 
-    {
-      double distance = computeDistance(current, *it);
-      if (distance < minDistance) 
-      {
-        minDistance = distance;
-        nextPoint = *it;
-        nearestIt = it;
-      }
-    }
-    if (nearestIt != unvisited.end()) 
-    {
-      path.push_back(nextPoint);
-      unvisited.erase(nearestIt);
-    }
-  }
-  return path;
-}
-
 Coords* Truck::getPosition()
 {
   return this->currentPosition;
@@ -125,22 +84,22 @@ void Truck::moveTowardsNextFarmUnit(int speed)
   {
     if(currentPosition->x < nextPosition.x)
     {
-      currentPosition->x += std::min(speed , nextPosition.x - currentPosition->x);
+      currentPosition->x++;
     }
     else
     {
-      currentPosition->x -= std::min(speed , currentPosition->x - nextPosition.x);
+      currentPosition->x--;
     }
   }
   else if(currentPosition->y != nextPosition.y)
   {
     if(currentPosition->y < nextPosition.y)
     {
-      currentPosition->y += std::min(speed , nextPosition.y - currentPosition->y);
+      currentPosition->y++;
     }
     else 
     {
-      currentPosition->y -= std::min(speed , currentPosition->y - nextPosition.y);
+      currentPosition->y--;
     }
   }
   if (currentPosition->x == nextPosition.x && currentPosition->y == nextPosition.y) 

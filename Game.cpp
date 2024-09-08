@@ -58,7 +58,7 @@ void Game::run()
               deliveryTruck->startEngine();
             }
           }
-          std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+          std::this_thread::sleep_for(std::chrono::milliseconds(10000));
           for(Truck* truck : trucks)
           {
             publisher->removeTruck(truck);
@@ -126,6 +126,7 @@ void Game::rain()
     if(cropField)
     {
       cropField->rain();
+      cropField->notifyDelivery();
     }
     farmIteratorRain->next();
   }
@@ -238,13 +239,7 @@ void Game::displayWindow()
         sf::Vector2i mousePos = sf::Mouse::getPosition(window);
         int x = (mousePos.x / tileSize) - 2;
         int y = (mousePos.y / tileSize) - 2;
-        FarmUnit* unit = farmIterator->getFarmUnitByIndex(currentIndex);
-        if(x == 1 && y == -2)
-        {
-          this->publisher->add(unit,"Delivery");
-          selectingHUD = false;
-        }
-        else if(x == -2 && y == -2)
+        if(x == -2 && y == -2)
         {
           window.close();
           selectingHUD = false;

@@ -9,7 +9,7 @@ Truck* TruckFactory::buy(std::string type)
 {
   if(type == "Delivery")
   {
-    return new DeliveryTruck(this->map,5);
+    return new DeliveryTruck(this->map,100);
   }
   else if(type == "Fertilizer")
   {

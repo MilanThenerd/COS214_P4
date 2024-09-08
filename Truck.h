@@ -17,8 +17,6 @@ class Truck
     std::vector<std::vector<FarmUnit*>> farmMap;
     std::vector<Coords> path;
     FarmTraversalBFS* farmIterator;
-    double computeDistance(const Coords& a, const Coords& b);
-    std::vector<Coords> findShortestPathRec();
     void findShortestPath();
     Coords getCoords(FarmUnit* unit);
     Coords* currentPosition;

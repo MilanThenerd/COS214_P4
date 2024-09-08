@@ -1,6 +1,7 @@
 #include "Publisher.h"
 
 #include <algorithm> 
+#include <iostream>
 
 Publisher::Publisher()
 {

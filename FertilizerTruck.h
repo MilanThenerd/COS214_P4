@@ -4,6 +4,7 @@
 #include "Truck.h"
 #include "FarmUnit.h"
 #include "ExtraBarnDecorator.h"
+#include "FertilizerDecorator.h"
 #include "CropField.h"
 
 class FertilizerTruck : public Truck
