@@ -288,7 +288,7 @@ void Game::handleEvents(sf::RenderWindow &window)
         if (unit)
         {
           // Check if unit is already a barn
-          if (!hasDecorator(unit, typeid(ExtraBarnDecorator)))
+          if (!DecoratorHelper::hasDecorator(unit, typeid(ExtraBarnDecorator)))
           {
             farmMap[farmUnitCoords.x][farmUnitCoords.y] = new ExtraBarnDecorator(unit);
             std::cout << "Barn button dropped over farm unit at: (" << farmUnitCoords.x << ", " << farmUnitCoords.y << ")" << std::endl;
@@ -306,7 +306,7 @@ void Game::handleEvents(sf::RenderWindow &window)
         if (unit)
         {
           // Check if unit is already a fertilizer
-          if (!hasDecorator(unit, typeid(FertilizerDecorator)))
+          if (!DecoratorHelper::hasDecorator(unit, typeid(FertilizerDecorator)))
           {
             farmMap[farmUnitCoords.x][farmUnitCoords.y] = new FertilizerDecorator(unit);
             std::cout << "Fertilizer button dropped over farm unit at: (" << farmUnitCoords.x << ", " << farmUnitCoords.y << ")" << std::endl;
@@ -320,7 +320,8 @@ void Game::handleEvents(sf::RenderWindow &window)
       {
         sf::Vector2i farmUnitCoords = getFarmUnitCoords(bbDropPosition);
         FarmUnit *unit = getUnit(farmUnitCoords.x, farmUnitCoords.y);
-        if (!hasDecorator(unit, typeid(ExtraBarnDecorator)))
+        Barn *bu = dynamic_cast<Barn *>(unit);
+        if (!bu)
         {
           delete unit;
           farmMap[farmUnitCoords.x][farmUnitCoords.y] = new Barn(farmMap, farmUnitCoords.x, farmUnitCoords.y);
@@ -528,30 +529,6 @@ void Game::displayText(sf::RenderWindow &window, std::string text, int fontsize,
   }
 
   window.draw(t);
-}
-
-bool Game::hasDecorator(FarmUnit *unit, const std::type_info &decoratorType)
-{
-  while (unit)
-  {
-    if (typeid(*unit) == decoratorType)
-    {
-      return true;
-    }
-    if (auto bd = dynamic_cast<ExtraBarnDecorator *>(unit))
-    {
-      unit = bd->getWrappedUnit();
-    }
-    else if (auto fd = dynamic_cast<FertilizerDecorator *>(unit))
-    {
-      unit = fd->getWrappedUnit();
-    }
-    else
-    {
-      break;
-    }
-  }
-  return false;
 }
 
 void Game::displayUI(sf::RenderWindow &window)

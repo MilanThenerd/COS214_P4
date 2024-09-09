@@ -2,11 +2,8 @@
 #define CROPFIELD_H
 
 #include "FarmUnit.h"
-#include "Barn.h"
 #include "SoilState.h"
 #include "DrySoil.h"
-#include "FruitfulSoil.h"
-#include "FloodedSoil.h"
 #include "FarmTraversalBFS.h"
 #include <cstdlib>
 

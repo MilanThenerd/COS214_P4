@@ -8,12 +8,12 @@
 #include "FarmTraversalDFS.h"
 #include "CropField.h"
 #include "Coords.h"
-
 #include <thread>
 #include <vector>
 #include <queue>
 #include <stack>
 #include <unordered_set>
+#include "Barn.h"
 #include <memory>
 #include <map>
 #include <cmath>
@@ -74,7 +74,6 @@ private:
   void handleEvents(sf::RenderWindow &window);
   bool isOverFarmUnit(const sf::Vector2f &position);
   sf::Vector2i getFarmUnitCoords(const sf::Vector2f &position);
-  bool hasDecorator(FarmUnit *unit, const std::type_info &decoratorType);
 
 #endif
   void setUnit(int x, int y, FarmUnit *unit);

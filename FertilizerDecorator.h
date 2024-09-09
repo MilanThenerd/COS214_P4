@@ -12,17 +12,17 @@ private:
 
 public:
     FertilizerDecorator(FarmUnit *unit);
-    int getTotalCapacity() const override;
-    std::string getCropType() const override;
+    int getTotalCapacity() const;
+    std::string getCropType() const;
     std::string getSoilStateName() const;
     void increaseProduction();
     void harvest();
-    int getLeftoverCapacity() const override;
+    int getLeftoverCapacity() const;
     void notify();
-    void addCrops(int cropAmount) override;
-    int removeCrops(int cropAmount) override;
+    void addCrops(int cropAmount);
+    int removeCrops(int cropAmount);
     void rain();
-    FarmUnit *getWrappedUnit() { return decoratedUnit; }
+    FarmUnit *getWrappedUnit() { return unit; }
     ~FertilizerDecorator();
 };
 #endif
