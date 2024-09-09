@@ -10,6 +10,8 @@ void FertilizerDecorator::checkFertilizer()
 FertilizerDecorator::FertilizerDecorator(FarmUnit *unit) : FarmUnitDecorator(unit)
 {
     this->unit = unit;
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
+    cropField->setState(new FruitfulSoil());
 }
 
 FertilizerDecorator::~FertilizerDecorator()

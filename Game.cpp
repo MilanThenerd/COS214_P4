@@ -535,6 +535,22 @@ void Game::displayFarm(sf::RenderWindow &window)
     //   highlight.setSize(sf::Vector2f(tileSize - 10, tileSize - 10));
     //   window.draw(highlight);
     // }
+    // if (currentIndex == weatherIterator->getIndex(unit))
+    // {
+    //   if (auto it = spriteMap.find("Cloud"); it != spriteMap.end())
+    //   {
+    //     drawSprite(window, it->second, x, y);
+    //   }
+    // }
+    farmIterator->next();
+  }
+  farmIterator->firstFarm();
+  while (farmIterator->hasNext())
+  {
+    FarmUnit *unit = farmIterator->currentFarm();
+    int x = farmIterator->getPath()[farmIterator->getCurrentIndex()].x;
+    int y = farmIterator->getPath()[farmIterator->getCurrentIndex()].y;
+
     if (currentIndex == weatherIterator->getIndex(unit))
     {
       if (auto it = spriteMap.find("Cloud"); it != spriteMap.end())
@@ -542,6 +558,7 @@ void Game::displayFarm(sf::RenderWindow &window)
         drawSprite(window, it->second, x, y);
       }
     }
+
     farmIterator->next();
   }
 }
