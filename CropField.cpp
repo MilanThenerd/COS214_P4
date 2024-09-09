@@ -103,7 +103,7 @@ void CropField::notifyDelivery()
 
 void CropField::notifyFertilizer()
 {
-  this->publisher->add(this,"Ferilizer");
+  this->publisher->add(this,"Fertilizer");
 }
 
 CropField::~CropField()

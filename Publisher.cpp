@@ -36,7 +36,6 @@ void Publisher::removeTruck(Truck* truck)
 bool Publisher::handle()
 {
   std::size_t truckIndex = 0;
-
   while (!queueFarm.empty())
   {
     if (truckVector.empty())

@@ -5,6 +5,7 @@
 #include "FarmUnit.h"
 #include "CropField.h"
 #include "ExtraBarnDecorator.h"
+#include "FertilizerDecorator.h"
 
 class DeliveryTruck : public Truck
 {

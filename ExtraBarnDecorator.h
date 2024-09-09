@@ -14,7 +14,6 @@ public:
   int getTotalCapacity() const;
   std::string getCropType() const;
   std::string getSoilStateName() const;
-  void increaseProduction();
   void harvest();
   int getLeftoverCapacity() const;
   void notifyDelivery();

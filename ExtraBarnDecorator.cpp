@@ -30,15 +30,6 @@ std::string ExtraBarnDecorator::getSoilStateName() const
   return "Not a cropfield";
 }
 
-void ExtraBarnDecorator::increaseProduction()
-{
-  CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
-  if (cropField)
-  {
-    cropField->increaseProduction();
-  }
-}
-
 void ExtraBarnDecorator::harvest()
 {
   CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);

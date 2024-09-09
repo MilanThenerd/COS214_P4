@@ -87,7 +87,6 @@ void Game::handlePublisher()
 void Game::moveTrucks()
 {
   std::vector<Truck*> trucks = publisher->getTrucks();
-  std::cout << trucks.size() << std::endl;
   for(Truck* truck : trucks)
   {
     while(truck->getPath().size() > 0)
@@ -108,17 +107,25 @@ void Game::rain()
   FarmUnit *unit = weatherIterator->currentFarm();
   CropField *cropField = dynamic_cast<CropField *>(unit);
   FertilizerDecorator *fertilizerDecorator = dynamic_cast<FertilizerDecorator*>(unit);
+  ExtraBarnDecorator *extraBarnDecorator = dynamic_cast<ExtraBarnDecorator*>(unit);
   if (cropField)
   {
     cropField->rain();
     cropField->harvest();
     cropField->notifyDelivery();
-    std::cout << cropField->getLeftoverCapacity() << std::endl;
   }
   else if(fertilizerDecorator)
   {
     fertilizerDecorator->rain();
     fertilizerDecorator->harvest();
+    fertilizerDecorator->notifyDelivery();
+    fertilizerDecorator->notifyFertilizer();
+  }
+  else if(extraBarnDecorator)
+  {
+    extraBarnDecorator->rain();
+    extraBarnDecorator->harvest();   
+    extraBarnDecorator->notifyDelivery(); 
   }
   weatherIterator->next();
   if (weatherIterator->isDone())

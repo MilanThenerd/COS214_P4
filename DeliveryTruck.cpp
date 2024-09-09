@@ -15,10 +15,15 @@ void DeliveryTruck::startEngine()
     {
       barn->removeCrops(200);
     }
+    else if(FertilizerDecorator* fert = dynamic_cast<FertilizerDecorator*>(unit))
+    {
+      fert->removeCrops(200);
+    }
     else if(CropField* crop = dynamic_cast<CropField*>(unit))
     {
-      crop->removeCrops(100);
+      crop->removeCrops(200);
     }
+
   }
 }
 
