@@ -68,11 +68,11 @@ Coords* Truck::getPosition()
   return this->currentPosition;
 }
 
-void Truck::moveTowardsNextFarmUnit(int speed)
+bool Truck::moveTowardsNextFarmUnit(int speed)
 {
   if(path.empty())
   {
-    return;
+    return false;
   }
   Coords nextPosition = path.front();
   if (currentPosition->x != nextPosition.x) 
@@ -100,5 +100,7 @@ void Truck::moveTowardsNextFarmUnit(int speed)
   if (currentPosition->x == nextPosition.x && currentPosition->y == nextPosition.y) 
   {
     path.erase(path.begin());
+    return true;
   }
+  return false;
 }

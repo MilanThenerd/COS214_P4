@@ -86,6 +86,7 @@ private:
   FarmUnit *getUnit(int x, int y);
   void rain();
   void handlePublisher();
+  void moveTrucks();
 
 public:
   Game(int width, int height);

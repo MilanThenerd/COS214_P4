@@ -55,6 +55,7 @@ void Game::run()
     {
     }
     handlePublisher();
+    moveTrucks();
     // End of day
     currentDay++;
   }
@@ -62,7 +63,6 @@ void Game::run()
 
 void Game::handlePublisher()
 {
-
   if(!publisher->hasQueue())
   {
     return;
@@ -82,7 +82,20 @@ void Game::handlePublisher()
       deliveryTruck->startEngine();
     }
   }
-  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+}
+
+void Game::moveTrucks()
+{
+  std::vector<Truck*> trucks = publisher->getTrucks();
+  std::cout << trucks.size() << std::endl;
+  for(Truck* truck : trucks)
+  {
+    while(truck->getPath().size() > 0)
+    {
+      truck->moveTowardsNextFarmUnit(1);
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+  }
   for(Truck* truck : trucks)
   {
     publisher->removeTruck(truck);
@@ -535,9 +548,6 @@ void Game::displayTrucks(sf::RenderWindow& window)
     if(delivery)
     {
       Coords* truckPos = delivery->getPosition();
-      delivery->moveTowardsNextFarmUnit(1);
-      Coords* nextPos = delivery->getPosition();
-
       std::string spriteKey = "TruckLeft";
       auto spriteIt = spriteMap.find(spriteKey);
       if (spriteIt != spriteMap.end()) 

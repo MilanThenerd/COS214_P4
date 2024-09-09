@@ -28,7 +28,7 @@ class Truck
     virtual Truck* clone() const = 0;
     std::vector<Coords> getPath() const;
     FarmUnit* getNextFarmUnit() const;
-    void moveTowardsNextFarmUnit(int speed);
+    bool moveTowardsNextFarmUnit(int speed);
     Coords* getPosition();
 };
 #endif
