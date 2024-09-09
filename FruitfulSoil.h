@@ -5,11 +5,36 @@
 #include "DrySoil.h"
 #include "FloodedSoil.h"
 
+/**
+ * @class FruitfulSoil
+ * @brief Represents the fruitful soil state in a crop field.
+ *
+ * The FruitfulSoil class is a derived class of SoilState and represents the fruitful soil state
+ * in a crop field. It provides methods to simulate rain, harvest crops, and get the name of the soil state.
+ */
 class FruitfulSoil : public SoilState
 {
-  public:
-    int harvestCrops() const override;
-    SoilState* rain() override;
-    std::string getName() const override;
+public:
+  /**
+   * @brief Harvests crops from the fruitful soil.
+   *
+   * @return The amount of crops harvested.
+   */
+  int harvestCrops() const override;
+
+  /**
+   * @brief Simulates rain on the fruitful soil.
+   *
+   * @return A pointer to the new SoilState after rain.
+   */
+  SoilState *rain() override;
+
+  /**
+   * @brief Gets the name of the fruitful soil state.
+   *
+   * @return The name of the fruitful soil state.
+   */
+  std::string getName() const override;
 };
-#endif
+
+#endif // FRUITFULSOIL_H

@@ -69,21 +69,21 @@ int Barn::removeCrops(int amount)
   return amount;
 }
 
-std::vector<FarmUnit*> Barn::getNeighbours()
+std::vector<FarmUnit *> Barn::getNeighbours()
 {
   return this->surroundingUnits;
 }
 
-void Barn::addNeighbour(FarmUnit* unit)
+void Barn::addNeighbour(FarmUnit *unit)
 {
   this->surroundingUnits.push_back(unit);
 }
 
 void Barn::handleNeighbours()
 {
-  for(FarmUnit* unit : surroundingUnits)
+  for (FarmUnit *unit : surroundingUnits)
   {
-    if(unit->getLeftoverCapacity() == 0 && this->getLeftoverCapacity() > 0)
+    if (unit->getLeftoverCapacity() == 0 && this->getLeftoverCapacity() > 0)
     {
       this->addCrops(unit->removeCrops(unit->getTotalCapacity()));
     }

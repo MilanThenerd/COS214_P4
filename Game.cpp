@@ -26,7 +26,7 @@ Game::Game(int width, int height) : width(width), height(height)
   {
     for (int y = 0; y < height; y++)
     {
-      setUnit(x, y, new CropField("Corn", 100,this->publisher));
+      setUnit(x, y, new CropField("Corn", 100, this->publisher));
     }
   }
   factory = new TruckFactory(farmMap);
@@ -63,21 +63,21 @@ void Game::run()
 
 void Game::handlePublisher()
 {
-  if(!publisher->hasQueue())
+  if (!publisher->hasQueue())
   {
     return;
   }
-  if(publisher->getTrucks().size() == 0)
+  if (publisher->getTrucks().size() == 0)
   {
     publisher->add(factory->buy("Delivery"));
     publisher->add(factory->buy("Fertilizer"));
   }
   publisher->handle();
-  std::vector<Truck*> trucks = publisher->getTrucks();
+  std::vector<Truck *> trucks = publisher->getTrucks();
   std::vector<std::thread> threads;
-  for(Truck* truck : trucks)
+  for (Truck *truck : trucks)
   {
-    if(DeliveryTruck* deliveryTruck = dynamic_cast<DeliveryTruck*>(truck))
+    if (DeliveryTruck *deliveryTruck = dynamic_cast<DeliveryTruck *>(truck))
     {
       deliveryTruck->startEngine();
     }
@@ -86,16 +86,16 @@ void Game::handlePublisher()
 
 void Game::moveTrucks()
 {
-  std::vector<Truck*> trucks = publisher->getTrucks();
-  for(Truck* truck : trucks)
+  std::vector<Truck *> trucks = publisher->getTrucks();
+  for (Truck *truck : trucks)
   {
-    while(truck->getPath().size() > 0)
+    while (truck->getPath().size() > 0)
     {
       truck->moveTowardsNextFarmUnit(1);
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
   }
-  for(Truck* truck : trucks)
+  for (Truck *truck : trucks)
   {
     publisher->removeTruck(truck);
     factory->sell(truck);
@@ -106,26 +106,26 @@ void Game::rain()
 {
   FarmUnit *unit = weatherIterator->currentFarm();
   CropField *cropField = dynamic_cast<CropField *>(unit);
-  FertilizerDecorator *fertilizerDecorator = dynamic_cast<FertilizerDecorator*>(unit);
-  ExtraBarnDecorator *extraBarnDecorator = dynamic_cast<ExtraBarnDecorator*>(unit);
+  FertilizerDecorator *fertilizerDecorator = dynamic_cast<FertilizerDecorator *>(unit);
+  ExtraBarnDecorator *extraBarnDecorator = dynamic_cast<ExtraBarnDecorator *>(unit);
   if (cropField)
   {
     cropField->rain();
     cropField->harvest();
     cropField->notifyDelivery();
   }
-  else if(fertilizerDecorator)
+  else if (fertilizerDecorator)
   {
     fertilizerDecorator->rain();
     fertilizerDecorator->harvest();
     fertilizerDecorator->notifyDelivery();
     fertilizerDecorator->notifyFertilizer();
   }
-  else if(extraBarnDecorator)
+  else if (extraBarnDecorator)
   {
     extraBarnDecorator->rain();
-    extraBarnDecorator->harvest();   
-    extraBarnDecorator->notifyDelivery(); 
+    extraBarnDecorator->harvest();
+    extraBarnDecorator->notifyDelivery();
   }
   weatherIterator->next();
   if (weatherIterator->isDone())
@@ -264,7 +264,7 @@ void Game::displayWindow()
     window.clear(sf::Color::Blue);
     displayFarm(window);
     displayRoad(window);
-    displayTrucks(window); 
+    displayTrucks(window);
     displayUI(window);
     window.display();
   }
@@ -546,22 +546,22 @@ void Game::displayFarm(sf::RenderWindow &window)
   }
 }
 
-void Game::displayTrucks(sf::RenderWindow& window)
+void Game::displayTrucks(sf::RenderWindow &window)
 {
-  std::vector<Truck*> trucks = publisher->getTrucks();
-  for(Truck* truck : trucks)
+  std::vector<Truck *> trucks = publisher->getTrucks();
+  for (Truck *truck : trucks)
   {
-    DeliveryTruck* delivery = dynamic_cast<DeliveryTruck*>(truck);
-    if(delivery)
+    DeliveryTruck *delivery = dynamic_cast<DeliveryTruck *>(truck);
+    if (delivery)
     {
-      Coords* truckPos = delivery->getPosition();
+      Coords *truckPos = delivery->getPosition();
       std::string spriteKey = "TruckLeft";
       auto spriteIt = spriteMap.find(spriteKey);
-      if (spriteIt != spriteMap.end()) 
+      if (spriteIt != spriteMap.end())
       {
         drawSprite(window, spriteIt->second, truckPos->x, truckPos->y);
-      } 
-      else 
+      }
+      else
       {
         std::cerr << "Truck sprite for direction " << spriteKey << " not found!" << std::endl;
       }
