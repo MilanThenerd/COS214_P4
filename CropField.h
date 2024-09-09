@@ -14,12 +14,12 @@ class CropField : public FarmUnit
 {
 private:
   SoilState *soilState;
-  bool fertilizer;
+  int fertilizerAmount = 10;
   FarmTraversal *farmIterator;
-  Publisher* publisher;
+  Publisher *publisher;
 
 public:
-  CropField(std::string crop, int capacity , Publisher* publisher);
+  CropField(std::string crop, int capacity, Publisher *publisher);
   int getTotalCapacity() const override;
   std::string getCropType() const override;
   std::string getSoilStateName() const;

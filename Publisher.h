@@ -10,17 +10,18 @@
 
 class Publisher
 {
-  private:
-    std::vector<Truck*> truckVector;
-    std::queue<std::pair<FarmUnit*,std::string>> queueFarm;
-  public:
-    Publisher();
-    void add(FarmUnit* unit , std::string orderType);
-    void add(Truck* unit);
-    bool handle();
-    bool hasQueue() const;
-    bool hasTruck() const;
-    void removeTruck(Truck* truck);
-    std::vector<Truck*>& getTrucks();
+private:
+  std::vector<Truck *> truckVector;
+  std::queue<std::pair<FarmUnit *, std::string>> queueFarm;
+
+public:
+  Publisher();
+  void add(FarmUnit *unit, std::string orderType);
+  void add(Truck *unit);
+  bool handle();
+  bool hasQueue() const;
+  bool hasTruck() const;
+  void removeTruck(Truck *truck);
+  std::vector<Truck *> &getTrucks();
 };
 #endif

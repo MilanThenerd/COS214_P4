@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-CropField::CropField(std::string crop, int capacity, Publisher* publisher)
+CropField::CropField(std::string crop, int capacity, Publisher *publisher)
 {
   this->cropType = crop;
   this->totalCapacity = capacity;
@@ -33,16 +33,16 @@ std::string CropField::getSoilStateName() const
 
 void CropField::increaseProduction()
 {
-  fertilizer = true;
+  fertilizerAmount = 10;
 }
 
 void CropField::harvest()
 {
   int crops = soilState->harvestCrops();
-  if (fertilizer)
+  if (fertilizerAmount > 0)
   {
     crops *= 2;
-    fertilizer = false;
+    fertilizerAmount--;
   }
   addCrops(crops);
 }
@@ -94,16 +94,19 @@ void CropField::rain()
 
 void CropField::notifyDelivery()
 {
-  double percentage = (double)this->currentStored/(double)this->totalCapacity;
-  if(percentage >= 0.75)
+  double percentage = (double)this->currentStored / (double)this->totalCapacity;
+  if (percentage >= 0.1)
   {
-    this->publisher->add(this,"Delivery");
+    this->publisher->add(this, "Delivery");
   }
 }
 
 void CropField::notifyFertilizer()
 {
-  this->publisher->add(this,"Fertilizer");
+  if (fertilizerAmount == 1)
+  {
+    this->publisher->add(this, "Fertilizer");
+  }
 }
 
 CropField::~CropField()

@@ -7,9 +7,9 @@
 #include <map>
 #include <iostream>
 
-Truck::Truck(std::vector<std::vector<FarmUnit*>>& map , int capacity) : farmMap(map) , capacity(capacity)
+Truck::Truck(std::vector<std::vector<FarmUnit *>> &map, int capacity) : farmMap(map), capacity(capacity)
 {
-  this->farmIterator = new FarmTraversalBFS(map,0,0);
+  this->farmIterator = new FarmTraversalBFS(map, 0, 0);
   int maxRows = farmMap.size();
   int maxCols = farmMap[0].size();
   std::random_device rd;
@@ -21,9 +21,9 @@ Truck::Truck(std::vector<std::vector<FarmUnit*>>& map , int capacity) : farmMap(
   currentPosition = new Coords(randomX, randomY);
 }
 
-bool Truck::callTruck(FarmUnit* unit)
+bool Truck::callTruck(FarmUnit *unit)
 {
-  if((int)farmVector.size() < capacity)
+  if ((int)farmVector.size() < capacity)
   {
     this->farmVector.push_back(unit);
     return true;
@@ -39,7 +39,7 @@ std::vector<Coords> Truck::getPath() const
 void Truck::findShortestPath()
 {
   std::vector<Coords> path;
-  for (const auto& unit : farmVector) 
+  for (const auto &unit : farmVector)
   {
     Coords coords = getCoords(unit);
     path.push_back(coords);
@@ -47,37 +47,37 @@ void Truck::findShortestPath()
   this->path = path;
 }
 
-Coords Truck::getCoords(FarmUnit* unit)
+Coords Truck::getCoords(FarmUnit *unit)
 {
-  Coords coord(-1,-1);
-  for(size_t i = 0 ; i < farmMap.size() ; ++i)
+  Coords coord(-1, -1);
+  for (size_t i = 0; i < farmMap.size(); ++i)
   {
-    for(size_t j = 0 ; j < farmMap[i].size() ; ++j)
+    for (size_t j = 0; j < farmMap[i].size(); ++j)
     {
-      if(unit == farmMap[i][j])
+      if (unit == farmMap[i][j])
       {
-        return Coords(j,i);
+        return Coords(j, i);
       }
     }
   }
   return coord;
 }
 
-Coords* Truck::getPosition()
+Coords *Truck::getPosition()
 {
   return this->currentPosition;
 }
 
 bool Truck::moveTowardsNextFarmUnit(int speed)
 {
-  if(path.empty())
+  if (path.empty())
   {
     return false;
   }
   Coords nextPosition = path.front();
-  if (currentPosition->x != nextPosition.x) 
+  if (currentPosition->x != nextPosition.x)
   {
-    if(currentPosition->x < nextPosition.x)
+    if (currentPosition->x < nextPosition.x)
     {
       currentPosition->x++;
     }
@@ -86,18 +86,18 @@ bool Truck::moveTowardsNextFarmUnit(int speed)
       currentPosition->x--;
     }
   }
-  else if(currentPosition->y != nextPosition.y)
+  else if (currentPosition->y != nextPosition.y)
   {
-    if(currentPosition->y < nextPosition.y)
+    if (currentPosition->y < nextPosition.y)
     {
       currentPosition->y++;
     }
-    else 
+    else
     {
       currentPosition->y--;
     }
   }
-  if (currentPosition->x == nextPosition.x && currentPosition->y == nextPosition.y) 
+  if (currentPosition->x == nextPosition.x && currentPosition->y == nextPosition.y)
   {
     path.erase(path.begin());
     return true;
