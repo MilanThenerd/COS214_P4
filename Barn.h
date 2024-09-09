@@ -6,19 +6,14 @@
 #include <iostream>
 #include "DecoratorHelper.h"
 
-// Game forward declaration
 class Game;
-// class Game
-// {
-// public:
-//   static bool hasDecorator(FarmUnit *unit, const std::type_info &decoratorType);
-// };
 
 class Barn : public FarmUnit
 {
 private:
   Coords coords;
   FarmTraversal *iterator;
+  std::vector<FarmUnit*> surroundingUnits;
   std::vector<std::vector<FarmUnit *>> &farmMap;
   void setup();
 
@@ -29,5 +24,8 @@ public:
   std::string getCropType() const override;
   void addCrops(int cropAmount) override;
   int removeCrops(int cropAmount) override;
+  std::vector<FarmUnit*> getNeighbours();
+  void addNeighbour(FarmUnit* unit);
+  void handleNeighbours();
 };
 #endif
