@@ -35,7 +35,7 @@ To Do list:
     - [X] FarmUnit can still flood.
     - [ ] Has a certain amount of fertilizer, needs to be replenished by calling a fertilizer truck.
 
-- [X] Component 4 Milan
+- [ ] Component 4 Milan
   - [X] Observer Pattern:
     - [X] Fertilizer truck
       - [X] Gets notified by FertilizerDecorator when fertilizer needs to be replenished.
