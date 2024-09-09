@@ -11,9 +11,9 @@ To Do list:
       - [ ] These plots should work the same as FarmUnit but call the respective FarmUnit functions on all of its child FarmUnits
       - [ ] We might need to rethink how the iterator works, see Component 5 below
   - [ ] FarmUnit may not know if it is fertilized, that functionality is done by the FertilizerDecorator
-  - [ ] Don't know how we will be doing the Barn farm unit
-    - [ ] Maybe adds a modifier to crop capacity of surrounding farm units?
-      - [ ] If so, surrounding units should check if a Barn FarmUnit is within 2 blocks or so when calculating max capacity
+  - [X] Don't know how we will be doing the Barn farm unit
+    - [X] Maybe adds a modifier to crop capacity of surrounding farm units?
+      - [X] If so, surrounding units should check if a Barn FarmUnit is within 2 blocks or so when calculating max capacity
 
 - [ ] Component 2 Simon
   - [X] We need to create a `SetState` function for the CropFields
