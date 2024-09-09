@@ -2,23 +2,23 @@
 
 #include <iostream>
 
-CropField::CropField(std::string crop , int capacity)
+CropField::CropField(std::string crop, int capacity, Publisher* publisher)
 {
   this->cropType = crop;
   this->totalCapacity = capacity;
   this->currentStored = 0;
   this->soilState = new DrySoil();
-  extraBarn = nullptr; 
+  this->publisher = publisher;
 }
 
 int CropField::getTotalCapacity() const
 {
-  return extraBarn ? totalCapacity + extraBarn->getTotalCapacity() : totalCapacity;
+  return totalCapacity;
 }
 
-int CropField::getLeftoverCapacity() const 
+int CropField::getLeftoverCapacity() const
 {
-  return (totalCapacity - currentStored) + (extraBarn ? extraBarn->getLeftoverCapacity() : 0);
+  return (totalCapacity - currentStored);
 }
 
 std::string CropField::getCropType() const
@@ -39,7 +39,7 @@ void CropField::increaseProduction()
 void CropField::harvest()
 {
   int crops = soilState->harvestCrops();
-  if(fertilizer)
+  if (fertilizer)
   {
     crops *= 2;
     fertilizer = false;
@@ -47,98 +47,67 @@ void CropField::harvest()
   addCrops(crops);
 }
 
-void CropField::addExtraBarn()
-{
-  extraBarn = new Barn(this->cropType, totalCapacity/2);
-}
-
-void CropField::removeExtraBarn()
-{
-  if(hasExtraBarn())
-  {
-    delete extraBarn;
-    extraBarn = nullptr;
-  }
-}
-
 void CropField::addCrops(int amount)
 {
   currentStored += amount;
-  if(currentStored > getTotalCapacity())
+  if (currentStored > getTotalCapacity())
   {
-    if(extraBarn)
-    {
-      extraBarn->addCrops(currentStored-totalCapacity);
-      currentStored -= totalCapacity;
-    }
-    else
-    {
-      currentStored = totalCapacity;
-    }
+    currentStored = totalCapacity;
   }
 }
 
 int CropField::removeCrops(int amount)
 {
   int total = 0;
-  if (extraBarn) 
+  if (amount > currentStored)
   {
-    int amountInBarn = extraBarn->getTotalCapacity() - extraBarn->getLeftoverCapacity();
-    if (amountInBarn >= amount) 
-    {
-      return extraBarn->removeCrops(amount);
-    } 
-    else 
-    {
-      total += extraBarn->removeCrops(amountInBarn);
-      amount -= amountInBarn;
-    }
-  }
-  if (amount > currentStored) 
-  {
-    total += currentStored;
+    total = currentStored;
     currentStored = 0;
-  } 
-  else 
+  }
+  else
   {
     currentStored -= amount;
-    total += amount;
+    total = amount;
   }
   return total;
+}
+
+void CropField::setState(SoilState *newstate)
+{
+  if (soilState != nullptr)
+  {
+    delete soilState;
+  }
+  soilState = newstate;
 }
 
 void CropField::rain()
 {
   static bool seeded = false;
-  if (!seeded) 
+  if (!seeded)
   {
     srand(static_cast<unsigned int>(time(0)));
     seeded = true;
   }
-  SoilState* newState = soilState->rain();
-  if(newState != soilState)
+  setState(soilState->rain());
+}
+
+void CropField::notifyDelivery()
+{
+  double percentage = (double)this->currentStored/(double)this->totalCapacity;
+  if(percentage >= 0.75)
   {
-    delete soilState;
-    soilState = newState;
+    this->publisher->add(this,"Delivery");
   }
 }
 
-bool CropField::hasExtraBarn()
+void CropField::notifyFertilizer()
 {
-  if(extraBarn)
-  {
-    return true;
-  }
-  return false;
+  this->publisher->add(this,"Ferilizer");
 }
 
 CropField::~CropField()
 {
   delete soilState;
   soilState = nullptr;
-  if(extraBarn)
-  {
-    delete extraBarn;
-    extraBarn = nullptr;
-  }
 }
