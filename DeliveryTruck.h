@@ -9,9 +9,9 @@
 
 class DeliveryTruck : public Truck
 {
-  public:
-    DeliveryTruck(std::vector<std::vector<FarmUnit*>>& map , int capacity);
-    void startEngine() override;
-    DeliveryTruck* clone() const override;
+public:
+  DeliveryTruck(std::vector<std::vector<FarmUnit *>> &map, int capacity);
+  void startEngine() override;
+  DeliveryTruck *clone() const override;
 };
 #endif

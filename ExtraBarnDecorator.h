@@ -6,9 +6,6 @@
 
 class ExtraBarnDecorator : public FarmUnitDecorator
 {
-private:
-  FarmUnit *unit;
-
 public:
   ExtraBarnDecorator(FarmUnit *unit);
   int getTotalCapacity() const;

@@ -14,22 +14,22 @@ FertilizerDecorator::FertilizerDecorator(FarmUnit *unit) : FarmUnitDecorator(uni
 
 FertilizerDecorator::~FertilizerDecorator()
 {
-    delete this->decoratedUnit;
+    delete this->unit;
 }
 
 int FertilizerDecorator::getTotalCapacity() const
 {
-    return this->decoratedUnit->getTotalCapacity();
+    return this->unit->getTotalCapacity();
 }
 
 std::string FertilizerDecorator::getCropType() const
 {
-    return this->decoratedUnit->getCropType();
+    return this->unit->getCropType();
 }
 
 std::string FertilizerDecorator::getSoilStateName() const
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         return cropField->getSoilStateName();
@@ -39,7 +39,7 @@ std::string FertilizerDecorator::getSoilStateName() const
 
 void FertilizerDecorator::increaseProduction()
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         cropField->increaseProduction();
@@ -48,7 +48,7 @@ void FertilizerDecorator::increaseProduction()
 
 void FertilizerDecorator::notifyDelivery()
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         cropField->notifyDelivery();
@@ -57,17 +57,16 @@ void FertilizerDecorator::notifyDelivery()
 
 void FertilizerDecorator::notifyFertilizer()
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         cropField->notifyFertilizer();
     }
 }
 
-
 void FertilizerDecorator::harvest()
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         cropField->harvest();
@@ -76,12 +75,12 @@ void FertilizerDecorator::harvest()
 
 int FertilizerDecorator::getLeftoverCapacity() const
 {
-    return this->decoratedUnit->getLeftoverCapacity();
+    return this->unit->getLeftoverCapacity();
 }
 
 void FertilizerDecorator::addCrops(int amount)
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         if (cropField->getLeftoverCapacity() > 0)
@@ -95,7 +94,7 @@ void FertilizerDecorator::addCrops(int amount)
 int FertilizerDecorator::removeCrops(int amount)
 {
     int total = 0;
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         total += cropField->removeCrops(amount);
@@ -109,7 +108,7 @@ int FertilizerDecorator::removeCrops(int amount)
 
 void FertilizerDecorator::rain()
 {
-    CropField *cropField = dynamic_cast<CropField *>(this->decoratedUnit);
+    CropField *cropField = dynamic_cast<CropField *>(this->unit);
     if (cropField)
     {
         int rando = rand() % 3;
