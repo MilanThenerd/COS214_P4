@@ -1,4 +1,9 @@
 #include "FloodedSoil.h"
+#include <iostream>
+
+FloodedSoil::FloodedSoil(int roundsleft) : roundsLeft(roundsleft)
+{
+}
 
 int FloodedSoil::harvestCrops() const
 {
@@ -10,17 +15,11 @@ SoilState *FloodedSoil::rain()
   roundsLeft--;
   if (roundsLeft > 0)
   {
-    return new FloodedSoil();
+    std::cout << "Flooded soil: " << roundsLeft << " rounds left" << std::endl;
+    return new FloodedSoil(roundsLeft);
   }
-
-  int random = rand() % 2;
-  // No rain
-  if (random == 0)
-  {
-    return new FruitfulSoil();
-  }
-  // Rain
-  return new FloodedSoil();
+  std::cout << "Flooded soil: turning into fruitful soil" << std::endl;
+  return new FruitfulSoil();
 }
 
 std::string FloodedSoil::getName() const

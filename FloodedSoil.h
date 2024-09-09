@@ -11,7 +11,7 @@ private:
     int roundsLeft;
 
 public:
-    FloodedSoil() : roundsLeft(2) {}
+    FloodedSoil(int roundsLeft = 2);
     int harvestCrops() const override;
     SoilState *rain() override;
     std::string getName() const override;
