@@ -27,15 +27,15 @@ To Do list:
     - [ ] Look at "Other" to see if we want to do weather-based transitions
 
 - [ ] Component 3
-  - [ ] Rename BarnDecorator to ExtraBarnDecorator
-    - [ ] It provides extra storage on top of the storage the FarmUnit it contains has. It can be built on ALL farm units, CropFields, and Barns.
-      - [ ] Maybe we fill up base FarmUnit storage and put the overflow in the ExtraBarn storage?
+  - [X] Rename BarnDecorator to ExtraBarnDecorator
+    - [X] It provides extra storage on top of the storage the FarmUnit it contains has. It can be built on ALL farm units, CropFields, and Barns.
+      - [X] Maybe we fill up base FarmUnit storage and put the overflow in the ExtraBarn storage?
   - [X] Implement FertilizerDecorator
     - [X] Essentially ensures that the FarmUnit it contains is fruitful no matter if it was Dry/Regular.
     - [X] FarmUnit can still flood.
     - [ ] Has a certain amount of fertilizer, needs to be replenished by calling a fertilizer truck.
 
-- [ ] Component 4 Milan
+- [X] Component 4 Milan
   - [X] Observer Pattern:
     - [X] Fertilizer truck
       - [X] Gets notified by FertilizerDecorator when fertilizer needs to be replenished.
