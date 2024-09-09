@@ -7,7 +7,7 @@
 #include "DrySoil.h"
 #include "FruitfulSoil.h"
 #include "FloodedSoil.h"
-
+#include "FarmTraversalBFS.h"
 #include <cstdlib>
 
 class CropField : public FarmUnit
@@ -15,6 +15,7 @@ class CropField : public FarmUnit
 private:
   SoilState *soilState;
   bool fertilizer;
+  FarmTraversal *farmIterator;
 
 public:
   CropField(std::string crop, int capacity);

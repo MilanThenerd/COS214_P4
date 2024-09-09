@@ -7,7 +7,7 @@
 class ExtraBarnDecorator : public FarmUnitDecorator
 {
 private:
-  Barn *barn;
+  FarmUnit *unit;
 
 public:
   ExtraBarnDecorator(FarmUnit *unit);

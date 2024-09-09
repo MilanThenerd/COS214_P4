@@ -8,7 +8,7 @@ void FertilizerDecorator::checkFertilizer()
 }
 FertilizerDecorator::FertilizerDecorator(FarmUnit *unit) : FarmUnitDecorator(unit)
 {
-    this->unit = new Barn(this->cropType, 100);
+    this->unit = unit;
 }
 
 FertilizerDecorator::~FertilizerDecorator()

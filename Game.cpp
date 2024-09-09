@@ -323,7 +323,7 @@ void Game::handleEvents(sf::RenderWindow &window)
         if (!hasDecorator(unit, typeid(ExtraBarnDecorator)))
         {
           delete unit;
-          farmMap[farmUnitCoords.x][farmUnitCoords.y] = new Barn("Crop", 100);
+          farmMap[farmUnitCoords.x][farmUnitCoords.y] = new Barn(farmMap, farmUnitCoords.x, farmUnitCoords.y);
           std::cout << "Big Barn button dropped over farm unit at: (" << farmUnitCoords.x << ", " << farmUnitCoords.y << ")" << std::endl;
         }
       }

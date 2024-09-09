@@ -2,7 +2,7 @@
 
 ExtraBarnDecorator::ExtraBarnDecorator(FarmUnit *unit) : FarmUnitDecorator(unit)
 {
-  this->barn = new Barn(this->cropType, 100);
+  this->unit = unit;
 }
 
 ExtraBarnDecorator::~ExtraBarnDecorator()
@@ -71,7 +71,7 @@ void ExtraBarnDecorator::addCrops(int amount)
     {
       cropField->addCrops(amount - cropField->getLeftoverCapacity());
     }
-    this->barn->addCrops(amount);
+    this->unit->addCrops(amount);
   }
 }
 
@@ -84,7 +84,7 @@ int ExtraBarnDecorator::removeCrops(int amount)
     total += cropField->removeCrops(amount);
     if (total != amount)
     {
-      this->barn->removeCrops(amount - total);
+      this->unit->removeCrops(amount - total);
     }
   }
   return total;

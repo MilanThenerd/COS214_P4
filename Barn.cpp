@@ -1,10 +1,11 @@
 #include "Barn.h"
 
-Barn::Barn(std::string crop , int capacity)
+Barn::Barn(std::vector<std::vector<FarmUnit *>> &farmMap, int startX, int startY)
 {
-  this->cropType = crop;
-  this->totalCapacity = capacity;
+  this->cropType = "None";
+  this->totalCapacity = 0;
   this->currentStored = 0;
+  this->iterator = new FarmTraversalBFS(farmMap, startX, startY);
 }
 
 int Barn::getTotalCapacity() const
@@ -24,12 +25,12 @@ std::string Barn::getCropType() const
 
 void Barn::addCrops(int amount)
 {
-  if(getLeftoverCapacity() == 0)
+  if (getLeftoverCapacity() == 0)
   {
     return;
   }
   currentStored += amount;
-  if(currentStored > totalCapacity)
+  if (currentStored > totalCapacity)
   {
     currentStored = totalCapacity;
   }
@@ -37,7 +38,7 @@ void Barn::addCrops(int amount)
 
 int Barn::removeCrops(int amount)
 {
-  if(currentStored < amount)
+  if (currentStored < amount)
   {
     int amountBack = currentStored;
     currentStored = 0;
